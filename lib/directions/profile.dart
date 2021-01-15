@@ -122,7 +122,7 @@ class Profile extends StatelessWidget {
                         'Notifications',
                         maxLines: 1,
                         style: TextStyle(
-                          fontSize: 13,
+                          fontSize: 12,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -165,7 +165,7 @@ class Profile extends StatelessWidget {
             ],
           ),
           SizedBox(
-            height: 50,
+            height: 25,
           ),
           Expanded(
             child: TabBarView(
@@ -174,7 +174,7 @@ class Profile extends StatelessWidget {
                   children: <Widget>[
                     Icon(
                       Icons.notifications_off,
-                      size: 150,
+                      size: 100,
                       color: primaryColor,
                     ),
                     SizedBox(

@@ -8,6 +8,7 @@ import 'package:deal_spotter/components/white_button.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:deal_spotter/directions/profile.dart';
 import 'package:deal_spotter/deals_app_bars/voucher_codes.dart';
+import 'package:deal_spotter/browse_app_bars/categories.dart';
 
 class Browse extends StatelessWidget {
   const Browse({
@@ -62,7 +63,7 @@ class Browse extends StatelessWidget {
             child: TabBarView(
               children: <Widget>[
                 Stores(),
-                Icon(Icons.directions_transit),
+                Categories(),
               ],
             ),
           ),

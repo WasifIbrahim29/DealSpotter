@@ -120,7 +120,7 @@ class Alerts extends StatelessWidget {
                         ),
                         Text(
                           'Add',
-                          style: TextStyle(color: primaryColor, fontSize: 16),
+                          style: TextStyle(color: primaryColor, fontSize: 12),
                         ),
                       ],
                     ));

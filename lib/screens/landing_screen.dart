@@ -22,7 +22,7 @@ class _LandingScreenState extends State<LandingScreen> {
     final List<Widget> _children = [
       Deals(),
       Browse(),
-      Text('Wasif'),
+      Text('Forum'),
       Alerts(),
       Profile(),
     ];
