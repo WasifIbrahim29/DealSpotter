@@ -72,6 +72,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               SizedBox(
                 height: 40,
               ),
+              Text(
+                'Edit Profile',
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(
+                height: 17,
+              ),
               Center(
                 child: GestureDetector(
                   onTap: () {
@@ -107,14 +118,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               SizedBox(
                 height: 20,
               ),
-              Text(
-                'Edit Profile',
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
               Container(
                 padding: EdgeInsets.only(left: 15, top: 25, right: 15),
                 child: Form(
@@ -128,6 +131,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           Expanded(
                             child: TextBox(
                               hint: "Name",
+                              labelText: "Name",
                               initialValue: provider.username,
                               validator: (value) {
                                 print(value);
@@ -145,6 +149,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           Expanded(
                             child: TextBox(
                               hint: "Surname",
+                              labelText: "Surname",
                               initialValue: provider.surname,
                               validator: (value) {
                                 print(value);
@@ -163,6 +168,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       ),
                       TextBox(
                         hint: "Address Line 1",
+                        labelText: "Address Line 1",
                         initialValue: provider.address1,
                         validator: (value) {
                           print(value);
@@ -178,6 +184,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       ),
                       TextBox(
                         hint: "Address Line 2",
+                        labelText: "Address Line 2",
                         initialValue: provider.address2,
                         validator: (value) {
                           print(value);
@@ -196,6 +203,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           Expanded(
                             child: TextBox(
                               hint: "City",
+                              labelText: "City",
                               initialValue: provider.city,
                               validator: (value) {
                                 print(value);
@@ -213,6 +221,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           Expanded(
                             child: TextBox(
                               hint: "Province",
+                              labelText: "Province",
                               initialValue: provider.state,
                               validator: (value) {
                                 print(value);
@@ -234,6 +243,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           Expanded(
                             child: TextBox(
                               hint: "Post Code",
+                              labelText: "Post Code",
                               initialValue: provider.post_code,
                               validator: (value) {
                                 print(value);
@@ -252,6 +262,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             child: TextBox(
                               initialValue: provider.dob,
                               hint: "Date Of Birth",
+                              labelText: "Date Of Birth",
                               validator: (value) {
                                 print(value);
                                 if (value == "") {
@@ -269,6 +280,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       ),
                       TextBox(
                         hint: "Contact No",
+                        labelText: "Contact No",
                         initialValue: provider.contact_no,
                         validator: (value) {
                           print(value);
