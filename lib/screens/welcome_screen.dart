@@ -29,7 +29,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             ),
             Expanded(
                 child: Padding(
-              padding: EdgeInsets.all(40),
+              padding: EdgeInsets.all(30),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -43,12 +43,15 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                             fontSize: 25,
                             fontWeight: FontWeight.w400),
                       ),
-                      Text(
-                        ' Deal Spotter',
-                        style: TextStyle(
-                            color: primaryColor,
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold),
+                      FittedBox(
+                        fit: BoxFit.fitWidth,
+                        child: Text(
+                          ' Deal Spotter',
+                          style: TextStyle(
+                              color: primaryColor,
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ],
                   ),

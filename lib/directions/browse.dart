@@ -2,13 +2,13 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:deal_spotter/constants.dart';
 import 'package:deal_spotter/components/top_search_bar.dart';
-import 'package:deal_spotter/browse_app_bars/stores.dart';
+import 'package:deal_spotter/browse_app_bars/stores_screen.dart';
 import 'package:deal_spotter/directions/deals.dart';
 import 'package:deal_spotter/components/white_button.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:deal_spotter/directions/profile.dart';
 import 'package:deal_spotter/deals_app_bars/voucher_codes.dart';
-import 'package:deal_spotter/browse_app_bars/categories.dart';
+import 'package:deal_spotter/browse_app_bars/categories_screen.dart';
 
 class Browse extends StatelessWidget {
   const Browse({
@@ -62,8 +62,8 @@ class Browse extends StatelessWidget {
           Expanded(
             child: TabBarView(
               children: <Widget>[
-                Stores(),
-                Categories(),
+                StoresScreen(),
+                CategoriesScreen(),
               ],
             ),
           ),

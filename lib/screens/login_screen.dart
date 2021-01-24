@@ -1,3 +1,4 @@
+import 'package:deal_spotter/providers/user_provider.dart';
 import 'package:deal_spotter/screens/landing_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:deal_spotter/constants.dart';
@@ -6,6 +7,10 @@ import 'package:deal_spotter/components/text_box.dart';
 import 'package:deal_spotter/components/top_search_bar.dart';
 import 'package:deal_spotter/models/user.dart';
 import 'package:http/http.dart' as http;
+import 'package:deal_spotter/models/user_model.dart';
+import 'package:deal_spotter/providers/user_provider.dart';
+import 'package:provider/provider.dart';
+import 'dart:convert';
 
 class LoginScreen extends StatefulWidget {
   static const String id = 'login_screen';
@@ -129,6 +134,11 @@ class _LoginScreenState extends State<LoginScreen> {
                               print('Response status: ${response.statusCode}');
                               print('Response body: ${response.body}');
                               if (response.statusCode == 200) {
+                                var data = jsonDecode(response.body);
+                                var user = data["response"];
+                                var newUser = UserModel.fromMap(user);
+                                Provider.of<UserProvider>(context).user =
+                                    newUser;
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(

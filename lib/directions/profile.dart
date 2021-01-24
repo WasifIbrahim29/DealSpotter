@@ -5,6 +5,7 @@ import 'package:deal_spotter/components/top_search_bar.dart';
 import 'package:deal_spotter/directions/deals.dart';
 import 'package:deal_spotter/components/white_button.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:deal_spotter/screens/edit_profile.dart';
 
 class Profile extends StatelessWidget {
   const Profile({
@@ -82,7 +83,13 @@ class Profile extends StatelessWidget {
                             height: 5,
                           ),
                           MaterialButton(
-                            onPressed: null,
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          EditProfileScreen()));
+                            },
                             elevation: 5,
                             color: Colors.white,
                             minWidth: 150,
