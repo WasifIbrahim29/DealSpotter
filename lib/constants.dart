@@ -49,6 +49,46 @@ const kTextFieldDecoration = InputDecoration(
   ),
 );
 
+const kCommentDecoration = InputDecoration(
+  hintStyle: TextStyle(fontSize: 15),
+  filled: true,
+  isDense: true,
+  enabled: true,
+  hintText: "Add a comment",
+  fillColor: Colors.white,
+  border: OutlineInputBorder(
+    borderRadius: BorderRadius.all(Radius.circular(0.0)),
+  ),
+  enabledBorder: OutlineInputBorder(
+    borderSide: BorderSide(color: Colors.grey, width: 1.0),
+    borderRadius: BorderRadius.all(Radius.circular(0.0)),
+  ),
+  focusedBorder: OutlineInputBorder(
+    borderSide: BorderSide(color: primaryColor, width: 2.0),
+    borderRadius: BorderRadius.all(Radius.circular(0.0)),
+  ),
+);
+
+const kReplyDecoration = InputDecoration(
+  hintStyle: TextStyle(fontSize: 15),
+  filled: true,
+  isDense: true,
+  enabled: true,
+  hintText: "Add a reply",
+  fillColor: Colors.white,
+  border: OutlineInputBorder(
+    borderRadius: BorderRadius.all(Radius.circular(0.0)),
+  ),
+  enabledBorder: OutlineInputBorder(
+    borderSide: BorderSide(color: Colors.grey, width: 1.0),
+    borderRadius: BorderRadius.all(Radius.circular(0.0)),
+  ),
+  focusedBorder: OutlineInputBorder(
+    borderSide: BorderSide(color: primaryColor, width: 2.0),
+    borderRadius: BorderRadius.all(Radius.circular(0.0)),
+  ),
+);
+
 const kDestinationItems = [
   BottomNavigationBarItem(
     icon: Icon(
@@ -88,6 +128,14 @@ const kDestinationItems = [
     ),
     title: Text(
       'Profile',
+    ),
+  ),
+  BottomNavigationBarItem(
+    icon: Icon(
+      Icons.view_list,
+    ),
+    title: Text(
+      'Discussion',
     ),
   ),
 ];

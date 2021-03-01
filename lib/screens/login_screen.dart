@@ -1,16 +1,13 @@
-import 'package:deal_spotter/providers/user_provider.dart';
-import 'package:deal_spotter/screens/landing_screen.dart';
-import 'package:flutter/material.dart';
-import 'package:deal_spotter/constants.dart';
+import 'dart:convert';
+
 import 'package:deal_spotter/components/blue_button.dart';
 import 'package:deal_spotter/components/text_box.dart';
-import 'package:deal_spotter/components/top_search_bar.dart';
-import 'package:deal_spotter/models/user.dart';
-import 'package:http/http.dart' as http;
+import 'package:deal_spotter/constants.dart';
+import 'package:deal_spotter/globals/globals.dart' as globals;
 import 'package:deal_spotter/models/user_model.dart';
-import 'package:deal_spotter/providers/user_provider.dart';
-import 'package:provider/provider.dart';
-import 'dart:convert';
+import 'package:deal_spotter/screens/landing_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class LoginScreen extends StatefulWidget {
   static const String id = 'login_screen';
@@ -21,7 +18,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   bool loggedIn = false;
   final formKey = GlobalKey<FormState>();
-  User user = new User();
+  String email;
+  String password;
 
   final snackBarKey = GlobalKey<ScaffoldState>();
   final snackBar = SnackBar(content: Text('Invalid Credentials!'));
@@ -74,7 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 .hasMatch(value)) {
                               return "This is not a valid email";
                             }
-                            user.email = value;
+                            email = value;
                             return null;
                           },
                         ),
@@ -89,7 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             if (value == "") {
                               return "This field is Mandatory!";
                             }
-                            user.password = value;
+                            password = value;
                             return null;
                           },
                         ),
@@ -127,7 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           onPressed: () async {
                             if (formKey.currentState.validate()) {
                               var url =
-                                  "https://letitgo.shop/dealspotter/services/signin?email=${user.email}&password=${user.password}";
+                                  "https://letitgo.shop/dealspotter/services/signin?email=$email&password=$password";
                               //var body = jsonEncode(user.toJson());
                               //print(body);
                               var response = await http.post(url);
@@ -135,15 +133,20 @@ class _LoginScreenState extends State<LoginScreen> {
                               print('Response body: ${response.body}');
                               if (response.statusCode == 200) {
                                 var data = jsonDecode(response.body);
-                                var user = data["response"];
-                                var newUser = UserModel.fromMap(user);
-                                Provider.of<UserProvider>(context).user =
-                                    newUser;
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => LandingScreen()),
-                                );
+                                var message = data["message"];
+                                if (message != null) {
+                                  snackBarKey.currentState.showSnackBar(
+                                      SnackBar(content: Text(message)));
+                                } else {
+                                  var user = data["response"];
+                                  var newUser = UserModel.fromMap(user);
+                                  globals.user = newUser;
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => LandingScreen()),
+                                  );
+                                }
                               } else {
                                 snackBarKey.currentState.showSnackBar(snackBar);
                               }

@@ -1,12 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:deal_spotter/constants.dart';
+import 'dart:convert';
+
 import 'package:deal_spotter/components/blue_button.dart';
 import 'package:deal_spotter/components/text_box.dart';
-import 'package:deal_spotter/components/top_search_bar.dart';
-import 'package:deal_spotter/models/user.dart';
+import 'package:deal_spotter/constants.dart';
+import 'package:deal_spotter/models/user_model.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'dart:io';
 
 class SignupScreen extends StatefulWidget {
   @override
@@ -17,14 +16,11 @@ class _SignupScreenState extends State<SignupScreen> {
   final formKey = GlobalKey<FormState>();
   bool termsAndConditionsCheckBox = false;
   bool receiveMarketingMaterialCheckBox = false;
-  User user = User();
+  var user = UserModel();
   final snackBarKey = GlobalKey<ScaffoldState>();
   final snackBar = SnackBar(
       content: Text(
           'You have to check the terms and conditions checkbox to signup! '));
-
-  final accountCreatedSnackbar =
-      SnackBar(content: Text('You account have been created successfully.'));
 
   @override
   Widget build(BuildContext context) {
@@ -171,7 +167,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                 if (value == "") {
                                   return "This field is Mandatory!";
                                 }
-                                user.postCode = value;
+                                user.post_code = value;
                                 return null;
                               },
                             ),
@@ -308,17 +304,25 @@ class _SignupScreenState extends State<SignupScreen> {
                           if (formKey.currentState.validate()) {
                             if (termsAndConditionsCheckBox) {
                               var url =
-                                  "https://letitgo.shop/dealspotter/services/signup?username=${user.username}&surname=${user.surname}&email=${user.email}&password=${user.password}&contact_no=${user.contact_no}&address1=${user.address1}&address2=${user.address2}&city=${user.city}&state=${user.state}&dob=${user.dob}&postCode=${user.postCode}";
+                                  "https://letitgo.shop/dealspotter/services/signup?username=${user.username}&surname=${user.surname}&email=${user.email}&password=${user.password}&contact_no=${user.contact_no}&address1=${user.address1}&address2=${user.address2}&city=${user.city}&state=${user.state}&dob=${user.dob}&postCode=${user.post_code}";
                               //var body = jsonEncode(user.toJson());
                               //print(body);
                               var response = await http.post(url);
                               print('Response status: ${response.statusCode}');
                               print('Response body: ${response.body}');
 
-                              snackBarKey.currentState
-                                  .showSnackBar(accountCreatedSnackbar);
-
-                              Navigator.pop(context);
+                              if (response.statusCode == 200) {
+                                var data = jsonDecode(response.body);
+                                var status = data["status"];
+                                var message = data["message"];
+                                if (status == 0) {
+                                  snackBarKey.currentState.showSnackBar(
+                                      SnackBar(content: Text(message)));
+                                } else {
+                                  Navigator.pop(context,
+                                      "Your account have been created successfully.");
+                                }
+                              }
                             } else {
                               snackBarKey.currentState.showSnackBar(snackBar);
                             }

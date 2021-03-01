@@ -5,4 +5,6 @@ import 'package:deal_spotter/models/user_model.dart';
 
 class UserProvider extends ChangeNotifier {
   var user = UserModel();
+  String username;
+  File image;
 }

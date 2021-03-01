@@ -1,13 +1,14 @@
-import 'package:deal_spotter/providers/user_provider.dart';
-import 'package:flutter/material.dart';
-import 'package:deal_spotter/constants.dart';
-import 'package:deal_spotter/components/blue_button.dart';
-import 'package:deal_spotter/components/text_box.dart';
-import 'package:deal_spotter/components/top_search_bar.dart';
-import 'package:deal_spotter/models/user.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
+
+import 'package:deal_spotter/components/blue_button.dart';
+import 'package:deal_spotter/components/text_box.dart';
+import 'package:deal_spotter/constants.dart';
+import 'package:deal_spotter/globals/globals.dart' as globals;
+import 'package:deal_spotter/models/user_model.dart';
+import 'package:deal_spotter/providers/user_provider.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
@@ -18,10 +19,13 @@ class EditProfileScreen extends StatefulWidget {
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
   File _image;
+  String displayImage;
   final formKey = GlobalKey<FormState>();
   bool termsAndConditionsCheckBox = false;
   bool receiveMarketingMaterialCheckBox = false;
-  User user = User();
+  UserModel user = UserModel();
+  String fileName = "";
+  ImagePicker imagePicker = ImagePicker();
 
   TextEditingController textEditingController = TextEditingController();
   final snackBarKey = GlobalKey<ScaffoldState>();
@@ -33,23 +37,49 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       SnackBar(content: Text('You account have been created successfully.'));
 
   _imgFromCamera() async {
-    // ignore: deprecated_member_use
-    File image = await ImagePicker.pickImage(
+    final pickedFile = await imagePicker.getImage(
         source: ImageSource.camera, imageQuality: 50);
 
+    if (pickedFile != null) {
+      _image = File(pickedFile.path);
+      print("image: $_image");
+      fileName = _image.path.split('/').last;
+      print("path: " + fileName);
+    } else {
+      print('No image selected.');
+    }
+
     setState(() {
-      _image = image;
+      returnImage();
     });
   }
 
   _imgFromGallery() async {
-    // ignore: deprecated_member_use
-    File image = await ImagePicker.pickImage(
+    print("in gallery");
+
+    final pickedFile = await imagePicker.getImage(
         source: ImageSource.gallery, imageQuality: 50);
 
+    if (pickedFile != null) {
+      _image = File(pickedFile.path);
+      print("image: $_image");
+      fileName = _image.path.split('/').last;
+      print("path: " + fileName);
+    } else {
+      print('No image selected.');
+    }
+
     setState(() {
-      _image = image;
+      returnImage();
     });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    displayImage =
+        "https://letitgo.shop/dealspotter/upload/userImage/${globals.user.user_image}";
   }
 
   @override
@@ -91,15 +121,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   child: CircleAvatar(
                     radius: 55,
                     backgroundColor: primaryColor,
-                    child: _image != null
+                    child: globals.user.user_image != ""
                         ? ClipRRect(
                             borderRadius: BorderRadius.circular(50),
-                            child: Image.file(
-                              _image,
-                              width: 100,
-                              height: 100,
-                              fit: BoxFit.fitHeight,
-                            ),
+                            child: returnImage(),
                           )
                         : Container(
                             decoration: BoxDecoration(
@@ -132,7 +157,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             child: TextBox(
                               hint: "Name",
                               labelText: "Name",
-                              initialValue: provider.username,
+                              initialValue: globals.user.username,
                               validator: (value) {
                                 print(value);
                                 if (value == "") {
@@ -150,7 +175,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             child: TextBox(
                               hint: "Surname",
                               labelText: "Surname",
-                              initialValue: provider.surname,
+                              initialValue: globals.user.surname,
                               validator: (value) {
                                 print(value);
                                 if (value == "") {
@@ -169,7 +194,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       TextBox(
                         hint: "Address Line 1",
                         labelText: "Address Line 1",
-                        initialValue: provider.address1,
+                        initialValue: globals.user.address1,
                         validator: (value) {
                           print(value);
                           if (value == "") {
@@ -185,7 +210,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       TextBox(
                         hint: "Address Line 2",
                         labelText: "Address Line 2",
-                        initialValue: provider.address2,
+                        initialValue: globals.user.address2,
                         validator: (value) {
                           print(value);
                           if (value == "") {
@@ -204,7 +229,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             child: TextBox(
                               hint: "City",
                               labelText: "City",
-                              initialValue: provider.city,
+                              initialValue: globals.user.city,
                               validator: (value) {
                                 print(value);
                                 if (value == "") {
@@ -222,7 +247,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             child: TextBox(
                               hint: "Province",
                               labelText: "Province",
-                              initialValue: provider.state,
+                              initialValue: globals.user.state,
                               validator: (value) {
                                 print(value);
                                 if (value == "") {
@@ -244,13 +269,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             child: TextBox(
                               hint: "Post Code",
                               labelText: "Post Code",
-                              initialValue: provider.post_code,
+                              initialValue: globals.user.post_code,
                               validator: (value) {
                                 print(value);
                                 if (value == "") {
                                   return "This field is Mandatory!";
                                 }
-                                user.postCode = value;
+                                user.post_code = value;
                                 return null;
                               },
                             ),
@@ -260,7 +285,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           ),
                           Expanded(
                             child: TextBox(
-                              initialValue: provider.dob,
+                              initialValue: globals.user.dob,
                               hint: "Date Of Birth",
                               labelText: "Date Of Birth",
                               validator: (value) {
@@ -281,7 +306,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       TextBox(
                         hint: "Contact No",
                         labelText: "Contact No",
-                        initialValue: provider.contact_no,
+                        initialValue: globals.user.contact_no,
                         validator: (value) {
                           print(value);
                           if (value == "") {
@@ -299,21 +324,60 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         colour: Colors.black,
                         onPressed: () async {
                           if (formKey.currentState.validate()) {
-                            if (termsAndConditionsCheckBox) {
-                              var url =
-                                  "https://letitgo.shop/dealspotter/services/signup?username=${user.username}&surname=${user.surname}&email=${user.email}&password=${user.password}&contact_no=${user.contact_no}&address1=${user.address1}&address2=${user.address2}&city=${user.city}&state=${user.state}&dob=${user.dob}&postCode=${user.postCode}";
-                              //var body = jsonEncode(user.toJson());
-                              //print(body);
-                              var response = await http.post(url);
+                            print("I am here");
+                            print(_image);
+                            Dio dio = new Dio();
+                            print(globals.user.memberId);
+                            FormData formData = FormData.fromMap({
+                              'username': user.username,
+                              'surname': user.surname,
+                              'contact_no': user.contact_no,
+                              'address1': user.address1,
+                              'address2': user.address2,
+                              'city': user.city,
+                              'dob': user.dob,
+                              'post_code': user.post_code,
+                              'memberId': globals.user.memberId,
+                              "user_image": await MultipartFile.fromFile(
+                                  _image.path,
+                                  filename: fileName),
+                            });
+
+                            try {
+                              var response = await dio.post(
+                                  "https://letitgo.shop/dealspotter/services/updateProfile",
+                                  data: formData);
+
                               print('Response status: ${response.statusCode}');
-                              print('Response body: ${response.body}');
+                              print('Response body: ${response.statusMessage}');
 
-                              snackBarKey.currentState
-                                  .showSnackBar(accountCreatedSnackbar);
-
-                              Navigator.pop(context);
-                            } else {
-                              snackBarKey.currentState.showSnackBar(snackBar);
+                              if (response.statusCode == 200) {
+                                var data = jsonDecode(response.data);
+                                var status = data["status"];
+                                print(status);
+                                if (status == 1) {
+                                  var response = data["response"];
+                                  globals.user.city = response["city"];
+                                  globals.user.address1 = response["address1"];
+                                  globals.user.address2 = response["address2"];
+                                  globals.user.username = response["username"];
+                                  globals.user.user_image =
+                                      response["user_image"];
+                                  print(globals.user.user_image);
+                                  globals.user.post_code =
+                                      response["post_code"];
+                                  globals.user.state = response["state"];
+                                  globals.user.contact_no =
+                                      response["contact_no"];
+                                  globals.user.dob = response["dob"];
+                                  Navigator.pop(
+                                      context, "Profile updated successfully");
+                                } else {
+                                  print(data["response"]);
+                                }
+                              }
+                            } on DioError catch (e) {
+                              print(e);
                             }
                           }
                         },
@@ -330,6 +394,25 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ),
       ),
     );
+  }
+
+  Widget returnImage() {
+    if (_image == null) {
+      displayImage = globals.user.user_image;
+      return Image.network(
+        displayImage,
+        width: 100,
+        height: 100,
+        fit: BoxFit.fitHeight,
+      );
+    } else {
+      return Image.file(
+        _image,
+        width: 100,
+        height: 100,
+        fit: BoxFit.fitHeight,
+      );
+    }
   }
 
   void _showPicker(context) {

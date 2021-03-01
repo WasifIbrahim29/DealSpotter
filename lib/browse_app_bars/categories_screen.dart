@@ -1,12 +1,9 @@
 import 'dart:convert';
 
+import 'package:deal_spotter/models/categories_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:deal_spotter/models/list_tiles_model.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
-import 'package:deal_spotter/models/categories_model.dart';
-import 'package:deal_spotter/components/LeftRightAlign.dart';
 
 class CategoriesScreen extends StatefulWidget {
   const CategoriesScreen({

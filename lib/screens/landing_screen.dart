@@ -1,13 +1,14 @@
 import 'dart:core';
-import 'package:flutter/material.dart';
+
 import 'package:deal_spotter/constants.dart';
-import 'package:deal_spotter/components/top_search_bar.dart';
-import 'package:deal_spotter/directions/deals.dart';
-import 'package:deal_spotter/components/white_button.dart';
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:deal_spotter/directions/profile.dart';
-import 'package:deal_spotter/directions/browse.dart';
+import 'package:deal_spotter/deals_app_bars/forum.dart';
+import 'package:deal_spotter/directions/ForumDirection.dart';
 import 'package:deal_spotter/directions/alerts.dart';
+import 'package:deal_spotter/directions/browse.dart';
+import 'package:deal_spotter/directions/deals.dart';
+import 'package:deal_spotter/directions/discussion.dart';
+import 'package:deal_spotter/directions/profile.dart';
+import 'package:flutter/material.dart';
 
 class LandingScreen extends StatefulWidget {
   @override
@@ -22,9 +23,10 @@ class _LandingScreenState extends State<LandingScreen> {
     final List<Widget> _children = [
       Deals(),
       Browse(),
-      Text('Forum'),
+      ForumDirection(),
       Alerts(),
       Profile(),
+      Discussion(),
     ];
 
     return SafeArea(

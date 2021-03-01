@@ -2,12 +2,16 @@ import 'dart:core';
 
 import 'package:deal_spotter/browse_app_bars/categories_screen.dart';
 import 'package:deal_spotter/browse_app_bars/stores_screen.dart';
+import 'package:deal_spotter/components/red_button.dart';
 import 'package:deal_spotter/components/top_search_bar.dart';
 import 'package:deal_spotter/constants.dart';
+import 'package:deal_spotter/discussion_app_bars.dart/discussed_screen.dart';
+import 'package:deal_spotter/discussion_app_bars.dart/new_discussion_screen.dart';
+import 'package:deal_spotter/widgets/AddDiscussionWidget.dart';
 import 'package:flutter/material.dart';
 
-class Browse extends StatelessWidget {
-  const Browse({
+class Discussion extends StatelessWidget {
+  const Discussion({
     Key key,
   }) : super(key: key);
 
@@ -19,6 +23,31 @@ class Browse extends StatelessWidget {
       child: Column(
         children: <Widget>[
           TopSearchBar(),
+          SizedBox(
+            height: 5,
+            child: Container(
+              color: Colors.white,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: RedButton(
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (BuildContext bx) {
+                    return SafeArea(
+                      child: DiscussionWidget(),
+                    );
+                  },
+                );
+              },
+              colour: Colors.white,
+              title: "+ Add Discussion",
+              fontSize: 20,
+              maxLines: 1,
+            ),
+          ),
           SizedBox(
             height: 5,
             child: Container(
@@ -38,7 +67,7 @@ class Browse extends StatelessWidget {
               tabs: [
                 Tab(
                   child: Text(
-                    'Stores',
+                    'New',
                     maxLines: 1,
                     style: TextStyle(
                       fontSize: 20,
@@ -48,7 +77,7 @@ class Browse extends StatelessWidget {
                 ),
                 Tab(
                   child: Text(
-                    'Categories',
+                    'Discussed',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                   ),
                 ),
@@ -58,8 +87,8 @@ class Browse extends StatelessWidget {
           Expanded(
             child: TabBarView(
               children: <Widget>[
-                StoresScreen(),
-                CategoriesScreen(),
+                NewDiscussionScreen(),
+                DiscussedScreen(),
               ],
             ),
           ),
@@ -67,4 +96,6 @@ class Browse extends StatelessWidget {
       ),
     );
   }
+
+  addADiscussion() {}
 }

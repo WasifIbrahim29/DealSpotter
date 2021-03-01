@@ -13,7 +13,7 @@ class UserModel {
   String state;
   String post_code;
   String dob;
-  String user_image;
+  String user_image = "";
   UserModel({
     this.memberId,
     this.username,

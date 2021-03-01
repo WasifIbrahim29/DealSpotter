@@ -1,9 +1,9 @@
 import 'package:deal_spotter/components/blue_button.dart';
-import 'package:flutter/material.dart';
-import 'package:deal_spotter/constants.dart';
 import 'package:deal_spotter/components/white_button.dart';
+import 'package:deal_spotter/constants.dart';
 import 'package:deal_spotter/screens/login_screen.dart';
 import 'package:deal_spotter/screens/signup_screen.dart';
+import 'package:flutter/material.dart';
 
 class WelcomeScreen extends StatefulWidget {
   static const String id = 'welcome_screen';
@@ -13,10 +13,13 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
+  final snackBarKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        key: snackBarKey,
         body: Column(
           children: <Widget>[
             Container(
@@ -75,10 +78,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     title: 'Sign Up',
                     colour: Colors.white,
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => SignupScreen()),
-                      );
+                      _navigateAndDisplaySelection(context);
                     },
                   ),
                   SizedBox(
@@ -100,7 +100,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => LoginScreen()),
+                        MaterialPageRoute(
+                          builder: (context) => LoginScreen(),
+                        ),
                       );
                     },
                   ),
@@ -111,5 +113,17 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         ),
       ),
     );
+  }
+
+  _navigateAndDisplaySelection(BuildContext context) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SignupScreen(),
+      ),
+    );
+    print(result);
+
+    snackBarKey.currentState.showSnackBar(SnackBar(content: Text("$result")));
   }
 }

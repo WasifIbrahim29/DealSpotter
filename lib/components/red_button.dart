@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:deal_spotter/constants.dart';
 
-class BlueButton extends StatelessWidget {
-  BlueButton(
+class RedButton extends StatelessWidget {
+  RedButton(
       {this.title,
       this.colour,
       @required this.onPressed,
@@ -21,7 +21,7 @@ class BlueButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       elevation: 5.0,
-      color: primaryColor,
+      color: Colors.red,
       borderRadius: BorderRadius.circular(2.0),
       child: MaterialButton(
         onPressed: onPressed,
