@@ -46,20 +46,20 @@ class _HistoryTabState extends State<HistoryTab> {
       }
     }
 
-    // var dealsUrl =
-    //     'https://letitgo.shop/dealspotter/services/getDealsHistory?memberId=${globals.user.memberId}';
+    var dealsUrl =
+        'https://letitgo.shop/dealspotter/services/getDealsHistory?memberId=${globals.user.memberId}';
 
-    // response = await http.get(dealsUrl);
-    // print('Response status: ${response.statusCode}');
-    // print('Response body: ${response.body}');
-    // if (response.statusCode == 200) {
-    //   var data = jsonDecode(response.body);
-    //   var latestDealsList = data["savedDeals"];
-    //   for (int i = 0; i < latestDealsList.length; i++) {
-    //     var deal = DealsHistoryModel.fromMap(latestDealsList[i]);
-    //     historyModels.add(deal);
-    //   }
-    // }
+    response = await http.get(dealsUrl);
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      var latestDealsList = data["dealsList"];
+      for (int i = 0; i < latestDealsList.length; i++) {
+        var deal = DealsHistoryModel.fromMap(latestDealsList[i]);
+        historyModels.add(deal);
+      }
+    }
     return 1;
   }
 

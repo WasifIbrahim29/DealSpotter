@@ -259,7 +259,7 @@ class _SingleDiscussionWidgetState extends State<SingleDiscussionWidget> {
                       if (response.statusCode == 200) {
                         var data = jsonDecode(response.body);
                         var status = data["status"];
-                        if (status == "success") {
+                        if (status == 1) {
                           setState(() {
                             commentController.text = "";
                             myDiscussionAnswers.clear();

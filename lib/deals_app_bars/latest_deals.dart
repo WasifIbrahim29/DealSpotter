@@ -6,6 +6,7 @@ import 'package:deal_spotter/screens/deals_desc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:deal_spotter/globals/globals.dart' as globals;
 
 class LatestDeals extends StatefulWidget {
   const LatestDeals({
@@ -43,8 +44,21 @@ class _LatestDealsState extends State<LatestDeals> {
         padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 20),
         itemBuilder: (BuildContext ctxt, int index) {
           return GestureDetector(
-            onTap: () {
-              print("wut up");
+            key: GlobalKey(),
+            onTap: () async {
+              var saveHistoryUrl =
+                  "https://letitgo.shop/dealspotter/services/updateViews?memberId=${globals.user.memberId}&dealId=${myDeals[index].dealId}&type=deal";
+              var response = await http.post(saveHistoryUrl);
+              print(saveHistoryUrl);
+              print('Response status: ${response.statusCode}');
+              print('Response body: ${response.body}');
+              if (response.statusCode == 200) {
+                var data = jsonDecode(response.body);
+                var status = data["status"];
+                if (status == 1) {
+                  print("Deal added into history successfully!");
+                }
+              }
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -88,8 +102,29 @@ class _LatestDealsState extends State<LatestDeals> {
                       ),
                       Expanded(
                         flex: 1,
-                        child: Icon(
-                          Icons.arrow_forward_ios,
+                        child: GestureDetector(
+                          onTap: () async {
+                            var saveVoucherCode =
+                                "https://letitgo.shop/dealspotter/services/saveHistory?memberId=${globals.user.memberId}&dealId=${myDeals[index].dealId}&type=deal";
+                            var response = await http.post(saveVoucherCode);
+                            print(saveVoucherCode);
+                            print('Response status: ${response.statusCode}');
+                            print('Response body: ${response.body}');
+                            if (response.statusCode == 200) {
+                              var data = jsonDecode(response.body);
+                              var status = data["status"];
+                              if (status == "success") {
+                                Scaffold.of(context).showSnackBar(SnackBar(
+                                  content: Text("Deal Saved"),
+                                ));
+                                print("Deal saved");
+                              }
+                            }
+                          },
+                          child: Icon(
+                            Icons.favorite,
+                            color: Colors.grey,
+                          ),
                         ),
                       )
                     ],
