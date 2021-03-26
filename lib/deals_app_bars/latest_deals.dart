@@ -23,7 +23,7 @@ class _LatestDealsState extends State<LatestDeals> {
   Future<List<DealsModel>> getDeals() async {
     myDeals.clear();
     var url = "https://letitgo.shop/dealspotter/services/getDeals";
-    var response = await http.get(url);
+    var response = await http.get(Uri.parse(url));
     print('Response status: ${response.statusCode}');
     print('Response bxxody: ${response.body}');
     if (response.statusCode == 200) {
@@ -48,7 +48,7 @@ class _LatestDealsState extends State<LatestDeals> {
             onTap: () async {
               var saveHistoryUrl =
                   "https://letitgo.shop/dealspotter/services/updateViews?memberId=${globals.user.memberId}&dealId=${myDeals[index].dealId}&type=deal";
-              var response = await http.post(saveHistoryUrl);
+              var response = await http.post(Uri.parse(saveHistoryUrl));
               print(saveHistoryUrl);
               print('Response status: ${response.statusCode}');
               print('Response body: ${response.body}');
@@ -106,7 +106,8 @@ class _LatestDealsState extends State<LatestDeals> {
                           onTap: () async {
                             var saveVoucherCode =
                                 "https://letitgo.shop/dealspotter/services/saveHistory?memberId=${globals.user.memberId}&dealId=${myDeals[index].dealId}&type=deal";
-                            var response = await http.post(saveVoucherCode);
+                            var response =
+                                await http.post(Uri.parse(saveVoucherCode));
                             print(saveVoucherCode);
                             print('Response status: ${response.statusCode}');
                             print('Response body: ${response.body}');

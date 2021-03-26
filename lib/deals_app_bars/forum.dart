@@ -28,7 +28,7 @@ class _ForumState extends State<Forum> {
     myDeals.clear();
     myComments.clear();
     var dealsUrl = "https://letitgo.shop/dealspotter/services/getDeals";
-    var response = await http.get(dealsUrl);
+    var response = await http.get(Uri.parse(dealsUrl));
     print('Response status: ${response.statusCode}');
     print('Response bxxody: ${response.body}');
     if (response.statusCode == 200) {
@@ -43,7 +43,7 @@ class _ForumState extends State<Forum> {
     for (int i = 0; i < myDeals.length; i++) {
       var commentsUrl =
           "https://letitgo.shop/dealspotter/services/getComments?memberId=${globals.user.memberId}&dealId=${myDeals[i].dealId}";
-      response = await http.get(commentsUrl);
+      response = await http.get(Uri.parse(commentsUrl));
       print('Response status: ${response.statusCode}');
       print('Response bxxody: ${response.body}');
       if (response.statusCode == 200) {

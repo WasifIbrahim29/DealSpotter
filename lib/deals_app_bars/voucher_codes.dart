@@ -32,7 +32,8 @@ class _VoucherCodesState extends State<VoucherCodes> {
       url = "https://letitgo.shop/dealspotter/services/getVouchers";
     }
 
-    var response = await http.get(url);
+    print(url);
+    var response = await http.get(Uri.parse(url));
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
     if (response.statusCode == 200) {
@@ -57,7 +58,7 @@ class _VoucherCodesState extends State<VoucherCodes> {
             onTap: () async {
               var saveHistoryUrl =
                   "https://letitgo.shop/dealspotter/services/updateViews?memberId=${globals.user.memberId}&dealId=${myVoucherCodes[index].voucherId}&type=voucher";
-              var response = await http.post(saveHistoryUrl);
+              var response = await http.post(Uri.parse(saveHistoryUrl));
               print(saveHistoryUrl);
               print('Response status: ${response.statusCode}');
               print('Response body: ${response.body}');
@@ -131,7 +132,8 @@ class _VoucherCodesState extends State<VoucherCodes> {
                           onTap: () async {
                             var saveVoucherCode =
                                 "https://letitgo.shop/dealspotter/services/saveHistory?memberId=${globals.user.memberId}&dealId=${myVoucherCodes[index].voucherId}&type=voucher";
-                            var response = await http.post(saveVoucherCode);
+                            var response =
+                                await http.post(Uri.parse(saveVoucherCode));
                             print(saveVoucherCode);
                             print('Response status: ${response.statusCode}');
                             print('Response body: ${response.body}');

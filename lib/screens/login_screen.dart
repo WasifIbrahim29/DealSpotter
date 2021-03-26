@@ -128,24 +128,31 @@ class _LoginScreenState extends State<LoginScreen> {
                                   "https://letitgo.shop/dealspotter/services/signin?email=$email&password=$password";
                               //var body = jsonEncode(user.toJson());
                               //print(body);
-                              var response = await http.post(url);
+                              var response = await http.post(Uri.parse(url));
                               print('Response status: ${response.statusCode}');
                               print('Response body: ${response.body}');
                               if (response.statusCode == 200) {
-                                var data = jsonDecode(response.body);
-                                var message = data["message"];
-                                if (message != null) {
-                                  snackBarKey.currentState.showSnackBar(
-                                      SnackBar(content: Text(message)));
-                                } else {
-                                  var user = data["response"];
-                                  var newUser = UserModel.fromMap(user);
-                                  globals.user = newUser;
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => LandingScreen()),
-                                  );
+                                try {
+                                  print(response.body.toString());
+                                  var data =
+                                      json.decode(response.body.toString());
+                                  var message = data["message"];
+                                  if (message != null) {
+                                    snackBarKey.currentState.showSnackBar(
+                                        SnackBar(content: Text(message)));
+                                  } else {
+                                    var user = data["response"];
+                                    var newUser = UserModel.fromMap(user);
+                                    globals.user = newUser;
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              LandingScreen()),
+                                    );
+                                  }
+                                } catch (e) {
+                                  print(e);
                                 }
                               } else {
                                 snackBarKey.currentState.showSnackBar(snackBar);

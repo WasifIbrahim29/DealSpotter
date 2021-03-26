@@ -102,7 +102,8 @@ class _DiscussionWidgetState extends State<DiscussionWidget> {
                             onPressed: () async {
                               var discussionUrl =
                                   "https://letitgo.shop/dealspotter/services/addDiscussion?memberId=${globals.user.memberId}&subject=${subjectController.text}&question=${questionController.text}";
-                              var response = await http.post(discussionUrl);
+                              var response =
+                                  await http.post(Uri.parse(discussionUrl));
                               print(discussionUrl);
                               print('Response status: ${response.statusCode}');
                               print('Response body: ${response.body}');

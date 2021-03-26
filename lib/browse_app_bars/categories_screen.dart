@@ -25,7 +25,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   Future<List<CategoriesModel>> getCategories() async {
     myCategories.clear();
     var url = "https://letitgo.shop/dealspotter/services/getCategories";
-    var response = await http.get(url);
+    var response = await http.get(Uri.parse(url));
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
     if (response.statusCode == 200) {
@@ -73,7 +73,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                         alignment: WrapAlignment.center,
                         children: <Widget>[
                           Text(
-                            myCategories[index].category_name,
+                            myCategories[index].name,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 fontWeight: FontWeight.w600,

@@ -33,7 +33,7 @@ class _HistoryTabState extends State<HistoryTab> {
     var vouchersUrl =
         'https://letitgo.shop/dealspotter/services/getVouchersHistory?memberId=${globals.user.memberId}';
 
-    var response = await http.get(vouchersUrl);
+    var response = await http.get(Uri.parse(vouchersUrl));
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
     if (response.statusCode == 200) {
@@ -49,7 +49,7 @@ class _HistoryTabState extends State<HistoryTab> {
     var dealsUrl =
         'https://letitgo.shop/dealspotter/services/getDealsHistory?memberId=${globals.user.memberId}';
 
-    response = await http.get(dealsUrl);
+    response = await http.get(Uri.parse(dealsUrl));
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
     if (response.statusCode == 200) {

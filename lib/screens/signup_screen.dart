@@ -6,6 +6,7 @@ import 'package:deal_spotter/constants.dart';
 import 'package:deal_spotter/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:deal_spotter/globals/globals.dart' as globals;
 
 class SignupScreen extends StatefulWidget {
   @override
@@ -304,10 +305,10 @@ class _SignupScreenState extends State<SignupScreen> {
                           if (formKey.currentState.validate()) {
                             if (termsAndConditionsCheckBox) {
                               var url =
-                                  "https://letitgo.shop/dealspotter/services/signup?username=${user.username}&surname=${user.surname}&email=${user.email}&password=${user.password}&contact_no=${user.contact_no}&address1=${user.address1}&address2=${user.address2}&city=${user.city}&state=${user.state}&dob=${user.dob}&postCode=${user.post_code}";
+                                  "https://letitgo.shop/dealspotter/services/signup?username=${user.username}&surname=${user.surname}&email=${user.email}&password=${user.password}&contact_no=${user.contact_no}&address1=${user.address1}&address2=${user.address2}&city=${user.city}&state=${user.state}&dob=${user.dob}&postCode=${user.post_code}&deviceToken=${globals.user.deviceToken}";
                               //var body = jsonEncode(user.toJson());
                               //print(body);
-                              var response = await http.post(url);
+                              var response = await http.post(Uri.parse(url));
                               print('Response status: ${response.statusCode}');
                               print('Response body: ${response.body}');
 

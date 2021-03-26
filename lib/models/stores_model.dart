@@ -4,44 +4,26 @@ import 'dart:core';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class StoresModel {
-  String storeId;
-  String title;
+import 'deal_alerts_model.dart';
+
+class StoresModel extends DealALertsModel {
   String store_img;
   String description;
   String about_store;
   String status;
   StoresModel({
-    this.storeId,
-    this.title,
+    String id,
+    String name,
     this.store_img,
     this.description,
     this.about_store,
     this.status,
-  });
-
-  StoresModel copyWith({
-    String storeId,
-    String title,
-    String store_img,
-    String description,
-    String about_store,
-    String status,
-  }) {
-    return StoresModel(
-      storeId: storeId ?? this.storeId,
-      title: title ?? this.title,
-      store_img: store_img ?? this.store_img,
-      description: description ?? this.description,
-      about_store: about_store ?? this.about_store,
-      status: status ?? this.status,
-    );
-  }
+  }) : super(id: id, name: name);
 
   Map<String, dynamic> toMap() {
     return {
-      'storeId': storeId,
-      'title': title,
+      'storeId': id,
+      'title': name,
       'store_img': store_img,
       'description': description,
       'about_store': about_store,
@@ -53,8 +35,8 @@ class StoresModel {
     if (map == null) return null;
 
     return StoresModel(
-      storeId: map['storeId'],
-      title: map['title'],
+      id: map['storeId'],
+      name: map['title'],
       store_img: map['store_img'],
       description: map['description'],
       about_store: map['about_store'],
@@ -69,6 +51,6 @@ class StoresModel {
 
   @override
   String toString() {
-    return 'StoresModel(storeId: $storeId, title: $title, store_img: $store_img, description: $description, about_store: $about_store, status: $status)';
+    return 'StoresModel(storeId: $id, title: $name, store_img: $store_img, description: $description, about_store: $about_store, status: $status)';
   }
 }

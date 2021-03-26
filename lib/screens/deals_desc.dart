@@ -49,7 +49,7 @@ class _DealsDescState extends State<DealsDesc> {
     myComments.clear();
     var commentsUrl =
         "https://letitgo.shop/dealspotter/services/getComments?memberId=${globals.user.memberId}&dealId=${widget.dealsModel.dealId}";
-    var response = await http.get(commentsUrl);
+    var response = await http.get(Uri.parse(commentsUrl));
     print(commentsUrl);
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');

@@ -39,7 +39,7 @@ class _NewDiscussionScreenState extends State<NewDiscussionScreen> {
   Future<List<DiscussionModel>> getNewDiscussions() async {
     myDiscussions.clear();
     var url = "https://letitgo.shop/dealspotter/services/listAllDiscussion";
-    var response = await http.get(url);
+    var response = await http.get(Uri.parse(url));
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
     if (response.statusCode == 200) {

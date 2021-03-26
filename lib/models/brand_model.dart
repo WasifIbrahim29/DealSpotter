@@ -2,14 +2,12 @@ import 'dart:convert';
 
 import 'package:deal_spotter/models/deal_alerts_model.dart';
 
-class CategoriesModel extends DealALertsModel {
-  String parent_id;
+class BrandModel extends DealALertsModel {
   String status;
   String dated;
-  CategoriesModel({
+  BrandModel({
     String id,
     String name,
-    this.parent_id,
     this.status,
     this.dated,
   }) : super(id: id, name: name);
@@ -17,20 +15,18 @@ class CategoriesModel extends DealALertsModel {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'parent_id': parent_id,
-      'category_name': name,
+      'brand_name': name,
       'status': status,
       'dated': dated,
     };
   }
 
-  factory CategoriesModel.fromMap(Map<String, dynamic> map) {
+  factory BrandModel.fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
 
-    return CategoriesModel(
+    return BrandModel(
       id: map['id'],
-      parent_id: map['parent_id'],
-      name: map['category_name'],
+      name: map['brand_name'],
       status: map['status'],
       dated: map['dated'],
     );
@@ -38,11 +34,11 @@ class CategoriesModel extends DealALertsModel {
 
   String toJson() => json.encode(toMap());
 
-  factory CategoriesModel.fromJson(String source) =>
-      CategoriesModel.fromMap(json.decode(source));
+  factory BrandModel.fromJson(String source) =>
+      BrandModel.fromMap(json.decode(source));
 
   @override
   String toString() {
-    return 'Categories(id: $id, parent_id: $parent_id, category_name: $name, status: $status, dated: $dated)';
+    return 'AlertsModel(id: $id, brand_name: $name, status: $status, dated: $dated)';
   }
 }

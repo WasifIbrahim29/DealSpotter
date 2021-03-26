@@ -7,4 +7,5 @@ class UserProvider extends ChangeNotifier {
   var user = UserModel();
   String username;
   File image;
+  List<Notification> notifications = [];
 }

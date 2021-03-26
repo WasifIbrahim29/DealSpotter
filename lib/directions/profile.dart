@@ -5,6 +5,7 @@ import 'package:deal_spotter/components/top_search_bar.dart';
 import 'package:deal_spotter/constants.dart';
 import 'package:deal_spotter/globals/globals.dart' as globals;
 import 'package:deal_spotter/profile_tabs/history.dart';
+import 'package:deal_spotter/profile_tabs/notification.dart';
 import 'package:deal_spotter/profile_tabs/saved.dart';
 import 'package:deal_spotter/screens/edit_profile.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +40,7 @@ class _ProfileState extends State<Profile> {
     return Scaffold(
       key: snackBarKey,
       body: DefaultTabController(
-        length: 4,
+        length: 3,
         initialIndex: 0,
         child: Column(
           children: <Widget>[
@@ -170,15 +171,6 @@ class _ProfileState extends State<Profile> {
                           'Notifications',
                           maxLines: 1,
                           style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      Tab(
-                        child: AutoSizeText(
-                          'Message',
-                          style: TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -210,38 +202,7 @@ class _ProfileState extends State<Profile> {
             Expanded(
               child: TabBarView(
                 children: <Widget>[
-                  Column(
-                    children: <Widget>[
-                      Icon(
-                        Icons.notifications_off,
-                        size: 100,
-                        color: primaryColor,
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Text(
-                        'No Notifications',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        'You haven\'t received any notifications yet',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w300,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Icon(Icons.directions_transit),
+                  NotificationTab(),
                   SavedTab(),
                   HistoryTab(),
                 ],

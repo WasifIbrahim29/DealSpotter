@@ -27,7 +27,7 @@ class _StoresScreenState extends State<StoresScreen> {
   Future<List<StoresModel>> getStores() async {
     myStores.clear();
     var url = "https://letitgo.shop/dealspotter/services/getStores";
-    var response = await http.get(url);
+    var response = await http.get(Uri.parse(url));
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
     if (response.statusCode == 200) {
@@ -58,7 +58,7 @@ class _StoresScreenState extends State<StoresScreen> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => Deals(
-                        storeId: myStores[index].storeId,
+                        storeId: myStores[index].id,
                       ),
                     ),
                   );
@@ -84,7 +84,7 @@ class _StoresScreenState extends State<StoresScreen> {
                           alignment: WrapAlignment.center,
                           children: <Widget>[
                             Text(
-                              myStores[index].title,
+                              myStores[index].name,
                               softWrap: true,
                               textAlign: TextAlign.center,
                               style: TextStyle(

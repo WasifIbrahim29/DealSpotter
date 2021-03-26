@@ -37,7 +37,7 @@ class _SavedTabState extends State<SavedTab> {
     var vouchersUrl =
         'https://letitgo.shop/dealspotter/services/getSavedVouchers?memberId=${globals.user.memberId}';
 
-    var response = await http.get(vouchersUrl);
+    var response = await http.get(Uri.parse(vouchersUrl));
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
     if (response.statusCode == 200) {
@@ -52,7 +52,7 @@ class _SavedTabState extends State<SavedTab> {
     var dealsUrl =
         'https://letitgo.shop/dealspotter/services/getSavedDeals?memberId=${globals.user.memberId}';
 
-    response = await http.get(dealsUrl);
+    response = await http.get(Uri.parse(dealsUrl));
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
     if (response.statusCode == 200) {

@@ -54,7 +54,7 @@ class _SingleDiscussionWidgetState extends State<SingleDiscussionWidget> {
     print(widget.discussionId);
     var singleDiscussionUrl =
         "https://letitgo.shop/dealspotter/services/viewSingleDiscussion?discussionId=${widget.discussionId}";
-    var response = await http.get(singleDiscussionUrl);
+    var response = await http.get(Uri.parse(singleDiscussionUrl));
     print(singleDiscussionUrl);
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
@@ -252,7 +252,7 @@ class _SingleDiscussionWidgetState extends State<SingleDiscussionWidget> {
                     onPressed: () async {
                       var replyUrl =
                           "https://letitgo.shop/dealspotter/services/addAnswer?question_id=${singleQuestion.id}&memberId=${globals.user.memberId}&answer=${commentController.text}";
-                      var response = await http.post(replyUrl);
+                      var response = await http.post(Uri.parse(replyUrl));
                       print(replyUrl);
                       print('Response status: ${response.statusCode}');
                       print('Response body: ${response.body}');

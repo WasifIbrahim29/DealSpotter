@@ -41,7 +41,7 @@ class _CommentWidgetState extends State<CommentWidget> {
     widget.myComments.clear();
     var commentsUrl =
         "https://letitgo.shop/dealspotter/services/getComments?memberId=${globals.user.memberId}&dealId=${widget.widget.dealsModel.dealId}";
-    var response = await http.get(commentsUrl);
+    var response = await http.get(Uri.parse(commentsUrl));
     print(commentsUrl);
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
@@ -94,7 +94,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                   onPressed: () async {
                     var commentsUrl =
                         "https://letitgo.shop/dealspotter/services/saveComment?memberId=${globals.user.memberId}&dealId=${widget.widget.dealsModel.dealId}&comment=${widget.commentController.text}";
-                    var response = await http.post(commentsUrl);
+                    var response = await http.post(Uri.parse(commentsUrl));
                     print(commentsUrl);
                     print('Response status: ${response.statusCode}');
                     print('Response body: ${response.body}');

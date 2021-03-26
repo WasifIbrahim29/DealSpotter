@@ -51,7 +51,7 @@ class _ReplyWidgetState extends State<ReplyWidget> {
     print("here bro");
     var repliesUrl =
         "https://letitgo.shop/dealspotter/services/getCommentReply?commId=${widget.commId}";
-    var response = await http.get(repliesUrl);
+    var response = await http.get(Uri.parse(repliesUrl));
     print(repliesUrl);
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
@@ -120,7 +120,7 @@ class _ReplyWidgetState extends State<ReplyWidget> {
                     onPressed: () async {
                       var replyUrl =
                           "https://letitgo.shop/dealspotter/services/savecommentReply?memberId=${globals.user.memberId}&dealId=${widget.dealId}&commId=${widget.commId}&comment=${replyController.text}";
-                      var response = await http.post(replyUrl);
+                      var response = await http.post(Uri.parse(replyUrl));
                       print(replyUrl);
                       print('Response status: ${response.statusCode}');
                       print('Response body: ${response.body}');
