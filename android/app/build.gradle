@@ -34,7 +34,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "letitgo.shop.dealspotter"
+        applicationId "shop.letitgo.dealspotter"
         minSdkVersion 16
         targetSdkVersion 28
         multiDexEnabled true

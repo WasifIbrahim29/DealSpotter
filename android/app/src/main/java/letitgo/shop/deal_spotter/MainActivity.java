@@ -1,4 +1,4 @@
-package letitgo.shop.dealspotter;
+package shop.letitgo.dealspotter;
 
 import io.flutter.embedding.android.FlutterActivity;
 

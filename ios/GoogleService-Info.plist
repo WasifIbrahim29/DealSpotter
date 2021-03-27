@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>1010037079323-1agaehccaorrpo79idpe8omnf1p29thj.apps.googleusercontent.com</string>
+	<string>1010037079323-7n6q2606v4ljd851anqfvgk9ik5tvjc9.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.1010037079323-1agaehccaorrpo79idpe8omnf1p29thj</string>
+	<string>com.googleusercontent.apps.1010037079323-7n6q2606v4ljd851anqfvgk9ik5tvjc9</string>
 	<key>API_KEY</key>
 	<string>AIzaSyB9u2hoFC-5mNAM2bFw-CIvfna-5spQ1J8</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +13,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>letitgo.shop.dealspotter</string>
+	<string>shop.letitgo.dealspotter</string>
 	<key>PROJECT_ID</key>
 	<string>deal-spotter-a1f73</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:1010037079323:ios:54965584b848751789e7be</string>
+	<string>1:1010037079323:ios:495742187b39438289e7be</string>
 </dict>
 </plist>
