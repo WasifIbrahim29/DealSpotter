@@ -12,15 +12,18 @@ class TopSearchBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: primaryColor,
+      height: 100,
       child: Padding(
-        padding: EdgeInsets.only(left: 30, right: 30, top: 30, bottom: 30),
+        padding: EdgeInsets.only(left: 10, right: 10, top: 30, bottom: 20),
         child: Row(
           children: <Widget>[
-            Icon(
-              Icons.ac_unit,
+            Image.asset(
+              'images/icon.png',
+              height: 100,
+              width: 100,
             ),
             SizedBox(
-              width: 30,
+              width: 1,
             ),
             Expanded(
               child: TextField(
