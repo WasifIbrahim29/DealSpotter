@@ -19,6 +19,7 @@ class _SignupScreenState extends State<SignupScreen> {
   bool termsAndConditionsCheckBox = false;
   bool receiveMarketingMaterialCheckBox = false;
   var user = UserModel();
+  bool showSpinner = false;
   final snackBarKey = GlobalKey<ScaffoldState>();
   final snackBar = SnackBar(
       content: Text(
@@ -28,6 +29,7 @@ class _SignupScreenState extends State<SignupScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: ModalProgressHUD(
+        inAsyncCall: showSpinner,
         child: Scaffold(
           key: snackBarKey,
           body: SingleChildScrollView(
@@ -306,6 +308,9 @@ class _SignupScreenState extends State<SignupScreen> {
                           onPressed: () async {
                             if (formKey.currentState.validate()) {
                               if (termsAndConditionsCheckBox) {
+                                setState(() {
+                                  showSpinner = true;
+                                });
                                 var url =
                                     "https://letitgo.shop/dealspotter/services/signup?username=${user.username}&surname=${user.surname}&email=${user.email}&password=${user.password}&contact_no=${user.contact_no}&address1=${user.address1}&address2=${user.address2}&city=${user.city}&state=${user.state}&dob=${user.dob}&postCode=${user.post_code}&deviceToken=${globals.user.deviceToken}";
                                 //var body = jsonEncode(user.toJson());
@@ -314,6 +319,10 @@ class _SignupScreenState extends State<SignupScreen> {
                                 print(
                                     'Response status: ${response.statusCode}');
                                 print('Response body: ${response.body}');
+
+                                setState(() {
+                                  showSpinner = false;
+                                });
 
                                 if (response.statusCode == 200) {
                                   var data = jsonDecode(response.body);

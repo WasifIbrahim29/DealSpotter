@@ -136,7 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   showSpinner = true;
                                 });
                                 var url =
-                                    "https://letitgo.shop/dealspotter/services/signin?email=$email&password=$password";
+                                    "https://letitgo.shop/dealspotter/services/signin?email=$email&password=$password&deviceToken=${globals.user.deviceToken}";
                                 //var body = jsonEncode(user.toJson());
                                 //print(body);
                                 var response = await http.post(Uri.parse(url));
@@ -148,7 +148,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 });
                                 if (response.statusCode == 200) {
                                   try {
-                                    print(response.body.toString());
                                     var data =
                                         json.decode(response.body.toString());
                                     var message = data["message"];
