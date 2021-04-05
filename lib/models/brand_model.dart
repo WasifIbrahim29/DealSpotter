@@ -8,9 +8,10 @@ class BrandModel extends DealALertsModel {
   BrandModel({
     String id,
     String name,
+    bool isSubscribed,
     this.status,
     this.dated,
-  }) : super(id: id, name: name);
+  }) : super(id: id, name: name, isSubscribed: isSubscribed);
 
   Map<String, dynamic> toMap() {
     return {

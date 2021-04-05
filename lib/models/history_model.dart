@@ -1,4 +1,7 @@
 import 'voucher_codes_model.dart';
-import 'latest_deals_model.dart';
+import 'package:flutter/material.dart';
 
-class HistoryModel {}
+class HistoryModel {
+  String title;
+  HistoryModel({@required this.title});
+}

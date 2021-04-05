@@ -14,11 +14,12 @@ class StoresModel extends DealALertsModel {
   StoresModel({
     String id,
     String name,
+    bool isSubscribed,
     this.store_img,
     this.description,
     this.about_store,
     this.status,
-  }) : super(id: id, name: name);
+  }) : super(id: id, name: name, isSubscribed: isSubscribed);
 
   Map<String, dynamic> toMap() {
     return {

@@ -2,11 +2,14 @@ import 'dart:convert';
 
 import 'package:deal_spotter/constants.dart';
 import 'package:deal_spotter/models/deals_model.dart';
+import 'package:deal_spotter/models/deals_saved_model.dart';
+import 'package:deal_spotter/providers/query_provider.dart';
 import 'package:deal_spotter/screens/deals_desc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:deal_spotter/globals/globals.dart' as globals;
+import 'package:provider/provider.dart';
 
 class LatestDeals extends StatefulWidget {
   const LatestDeals({
@@ -19,9 +22,49 @@ class LatestDeals extends StatefulWidget {
 
 class _LatestDealsState extends State<LatestDeals> {
   List<DealsModel> myDeals = [];
+  Future<List<DealsModel>> deals;
+  MaterialColor iconColor;
+
+  List<DealsSavedModel> mySavedDeals = [];
+
+  @override
+  void initState() {
+    super.initState();
+    deals = getDeals();
+    getSavedDealsList();
+  }
+
+  Future<int> getSavedDealsList() async {
+    mySavedDeals.clear();
+
+    var dealsUrl =
+        'https://letitgo.shop/dealspotter/services/getSavedDeals?memberId=${globals.user.memberId}';
+
+    var response = await http.get(Uri.parse(dealsUrl));
+    print("memberid ${globals.user.memberId}");
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      if (data["status"] == 1) {
+        var latestDealsList = data["savedDeals"];
+        for (int i = 0; i < latestDealsList.length; i++) {
+          var deal = DealsSavedModel.fromMap(latestDealsList[i]);
+          mySavedDeals.add(deal);
+        }
+      }
+    }
+
+    print("SavedDeals: $mySavedDeals");
+    return 1;
+  }
 
   Future<List<DealsModel>> getDeals() async {
     myDeals.clear();
+    Provider.of<QueryProvider>(context, listen: false)
+        .myFilteredLatestDeals
+        .clear();
+    Provider.of<QueryProvider>(context, listen: false).myLatestDeals.clear();
     var url = "https://letitgo.shop/dealspotter/services/getDeals";
     var response = await http.get(Uri.parse(url));
     print('Response status: ${response.statusCode}');
@@ -33,6 +76,7 @@ class _LatestDealsState extends State<LatestDeals> {
         var deal = DealsModel.fromMap(dealsList[i]);
         myDeals.add(deal);
       }
+      Provider.of<QueryProvider>(context, listen: false).addLatestDeal(myDeals);
       return myDeals;
     }
   }
@@ -47,7 +91,7 @@ class _LatestDealsState extends State<LatestDeals> {
             key: GlobalKey(),
             onTap: () async {
               var saveHistoryUrl =
-                  "https://letitgo.shop/dealspotter/services/updateViews?memberId=${globals.user.memberId}&dealId=${myDeals[index].dealId}&type=deal";
+                  "https://letitgo.shop/dealspotter/services/updateViews?memberId=${globals.user.memberId}&dealId=${Provider.of<QueryProvider>(context).myFilteredLatestDeals[index].dealId}&type=deal";
               var response = await http.post(Uri.parse(saveHistoryUrl));
               print(saveHistoryUrl);
               print('Response status: ${response.statusCode}');
@@ -63,7 +107,8 @@ class _LatestDealsState extends State<LatestDeals> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => DealsDesc(
-                    dealsModel: myDeals[index],
+                    dealsModel: Provider.of<QueryProvider>(context)
+                        .myFilteredLatestDeals[index],
                   ),
                 ),
               );
@@ -83,7 +128,7 @@ class _LatestDealsState extends State<LatestDeals> {
                         flex: 1,
                         child: Image(
                           image: NetworkImage(
-                              'https://letitgo.shop/dealspotter/upload/deals/${myDeals[index].deal_img}',
+                              'https://letitgo.shop/dealspotter/upload/deals/${Provider.of<QueryProvider>(context).myFilteredLatestDeals[index].deal_img}',
                               scale: 0.5),
                         ),
                       ),
@@ -93,7 +138,9 @@ class _LatestDealsState extends State<LatestDeals> {
                       Expanded(
                         flex: 5,
                         child: Text(
-                          myDeals[index].deal_title,
+                          Provider.of<QueryProvider>(context)
+                              .myFilteredLatestDeals[index]
+                              .deal_title,
                           style: TextStyle(
                               color: primaryColor,
                               fontWeight: FontWeight.bold,
@@ -104,27 +151,45 @@ class _LatestDealsState extends State<LatestDeals> {
                         flex: 1,
                         child: GestureDetector(
                           onTap: () async {
-                            var saveVoucherCode =
-                                "https://letitgo.shop/dealspotter/services/saveHistory?memberId=${globals.user.memberId}&dealId=${myDeals[index].dealId}&type=deal";
-                            var response =
-                                await http.post(Uri.parse(saveVoucherCode));
-                            print(saveVoucherCode);
-                            print('Response status: ${response.statusCode}');
-                            print('Response body: ${response.body}');
-                            if (response.statusCode == 200) {
-                              var data = jsonDecode(response.body);
-                              var status = data["status"];
-                              if (status == "success") {
-                                Scaffold.of(context).showSnackBar(SnackBar(
-                                  content: Text("Deal Saved"),
-                                ));
-                                print("Deal saved");
+                            if (dealAlreadySaved(
+                                Provider.of<QueryProvider>(context)
+                                    .myFilteredLatestDeals[index]
+                                    .dealId)) {
+                              Scaffold.of(context).showSnackBar(SnackBar(
+                                content: Text("Deal Already Saved"),
+                              ));
+                            } else {
+                              var saveVoucherCode =
+                                  "https://letitgo.shop/dealspotter/services/saveHistory?memberId=${globals.user.memberId}&dealId=${Provider.of<QueryProvider>(context).myFilteredLatestDeals[index].dealId}&type=deal";
+                              var response =
+                                  await http.post(Uri.parse(saveVoucherCode));
+                              print(saveVoucherCode);
+                              print('Response status: ${response.statusCode}');
+                              print('Response body: ${response.body}');
+                              if (response.statusCode == 200) {
+                                var data = jsonDecode(response.body);
+                                var status = data["status"];
+                                if (status == "success") {
+                                  setState(() {
+                                    iconColor = Colors.red;
+                                  });
+                                  Scaffold.of(context).showSnackBar(SnackBar(
+                                    content: Text("Deal Saved"),
+                                  ));
+                                  print("Deal saved");
+                                }
                               }
                             }
                           },
                           child: Icon(
                             Icons.favorite,
-                            color: Colors.grey,
+                            color: dealAlreadySaved(
+                                        Provider.of<QueryProvider>(context)
+                                            .myFilteredLatestDeals[index]
+                                            .dealId) ==
+                                    true
+                                ? Colors.red
+                                : Colors.grey,
                           ),
                         ),
                       )
@@ -135,16 +200,26 @@ class _LatestDealsState extends State<LatestDeals> {
             ),
           );
         },
-        itemCount: myDeals.length,
+        itemCount:
+            Provider.of<QueryProvider>(context).myFilteredLatestDeals.length,
       ),
     );
+  }
+
+  bool dealAlreadySaved(String dealId) {
+    for (DealsSavedModel deal in mySavedDeals) {
+      if (deal.dealId == dealId) {
+        return true;
+      }
+    }
+    return false;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-          future: getDeals(),
+          future: deals,
           builder: (context, snapshot) {
             return snapshot.data != null
                 ? DealWidget(snapshot.data)

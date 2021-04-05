@@ -10,6 +10,7 @@ class VoucherCodesModel {
   String store_title;
   String store_img;
   VoucherCodesModel({
+    String title,
     this.voucherId,
     this.voucher_title,
     this.voucher_code,

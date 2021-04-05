@@ -6,51 +6,24 @@ class DealsSavedModel extends SavedModel {
   String id;
   String memberId;
   String dealId;
-  String type;
   String dated;
-  String deal_title;
   String deal_url;
   String deal_price;
   String deal_attachments;
   String deal_description;
+  String type;
   DealsSavedModel({
+    String title,
     this.id,
     this.memberId,
     this.dealId,
-    this.type,
     this.dated,
-    this.deal_title,
+    this.type,
     this.deal_url,
     this.deal_price,
     this.deal_attachments,
     this.deal_description,
-  });
-
-  DealsSavedModel copyWith({
-    String id,
-    String memberId,
-    String dealId,
-    String type,
-    String dated,
-    String deal_title,
-    String deal_url,
-    String deal_price,
-    String deal_attachments,
-    String deal_description,
-  }) {
-    return DealsSavedModel(
-      id: id ?? this.id,
-      memberId: memberId ?? this.memberId,
-      dealId: dealId ?? this.dealId,
-      type: type ?? this.type,
-      dated: dated ?? this.dated,
-      deal_title: deal_title ?? this.deal_title,
-      deal_url: deal_url ?? this.deal_url,
-      deal_price: deal_price ?? this.deal_price,
-      deal_attachments: deal_attachments ?? this.deal_attachments,
-      deal_description: deal_description ?? this.deal_description,
-    );
-  }
+  }) : super(title: title);
 
   Map<String, dynamic> toMap() {
     return {
@@ -59,7 +32,7 @@ class DealsSavedModel extends SavedModel {
       'dealId': dealId,
       'type': type,
       'dated': dated,
-      'deal_title': deal_title,
+      'title': title,
       'deal_url': deal_url,
       'deal_price': deal_price,
       'deal_attachments': deal_attachments,
@@ -76,7 +49,7 @@ class DealsSavedModel extends SavedModel {
       dealId: map['dealId'],
       type: map['type'],
       dated: map['dated'],
-      deal_title: map['deal_title'],
+      title: map['deal_title'],
       deal_url: map['deal_url'],
       deal_price: map['deal_price'],
       deal_attachments: map['deal_attachments'],
@@ -91,37 +64,6 @@ class DealsSavedModel extends SavedModel {
 
   @override
   String toString() {
-    return 'DealsSavedModel(id: $id, memberId: $memberId, dealId: $dealId, type: $type, dated: $dated, deal_title: $deal_title, deal_url: $deal_url, deal_price: $deal_price, deal_attachments: $deal_attachments, deal_description: $deal_description)';
-  }
-
-  @override
-  bool operator ==(Object o) {
-    if (identical(this, o)) return true;
-
-    return o is DealsSavedModel &&
-        o.id == id &&
-        o.memberId == memberId &&
-        o.dealId == dealId &&
-        o.type == type &&
-        o.dated == dated &&
-        o.deal_title == deal_title &&
-        o.deal_url == deal_url &&
-        o.deal_price == deal_price &&
-        o.deal_attachments == deal_attachments &&
-        o.deal_description == deal_description;
-  }
-
-  @override
-  int get hashCode {
-    return id.hashCode ^
-        memberId.hashCode ^
-        dealId.hashCode ^
-        type.hashCode ^
-        dated.hashCode ^
-        deal_title.hashCode ^
-        deal_url.hashCode ^
-        deal_price.hashCode ^
-        deal_attachments.hashCode ^
-        deal_description.hashCode;
+    return 'DealsSavedModel(id: $id, memberId: $memberId, dealId: $dealId, type: $type, dated: $dated, deal_title: $title, deal_url: $deal_url, deal_price: $deal_price, deal_attachments: $deal_attachments, deal_description: $deal_description)';
   }
 }

@@ -11,8 +11,11 @@ import 'package:deal_spotter/screens/edit_profile.dart';
 import 'package:flutter/material.dart';
 
 class Profile extends StatefulWidget {
+  int currentIndex;
+
   Profile({
     Key key,
+    this.currentIndex,
   }) : super(key: key);
 
   @override
@@ -22,6 +25,7 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   final snackBarKey = GlobalKey<ScaffoldState>();
   String _image;
+  int tabIndex = 0;
 
   @override
   void initState() {
@@ -44,7 +48,8 @@ class _ProfileState extends State<Profile> {
         initialIndex: 0,
         child: Column(
           children: <Widget>[
-            TopSearchBar(),
+            TopSearchBar(
+                directionIndex: widget.currentIndex, tabIndex: tabIndex),
             Column(
               children: <Widget>[
                 Padding(
@@ -72,7 +77,8 @@ class _ProfileState extends State<Profile> {
                                 width: 100,
                                 height: 100,
                                 child: Icon(
-                                  Icons.supervised_user_circle,
+                                  Icons.person,
+                                  size: 60,
                                   color: Colors.grey[800],
                                 ),
                               ),
@@ -165,6 +171,11 @@ class _ProfileState extends State<Profile> {
                     indicatorPadding: EdgeInsets.zero,
                     indicatorSize: TabBarIndicatorSize.label,
                     indicatorColor: primaryColor,
+                    onTap: (index) {
+                      setState(() {
+                        tabIndex = index;
+                      });
+                    },
                     tabs: [
                       Tab(
                         child: Text(

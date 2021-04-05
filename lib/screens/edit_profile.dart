@@ -92,11 +92,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           child: Column(
             children: <Widget>[
               Container(
-                padding: EdgeInsets.all(25),
+                padding: EdgeInsets.all(5),
+                height: 80,
                 alignment: Alignment.center,
                 color: primaryColor,
-                child: Icon(
-                  Icons.flight,
+                child: Image.asset(
+                  'images/icon.png',
+                  height: 100,
+                  width: 100,
                 ),
               ),
               SizedBox(

@@ -10,11 +10,19 @@ import 'package:deal_spotter/discussion_app_bars.dart/new_discussion_screen.dart
 import 'package:deal_spotter/widgets/AddDiscussionWidget.dart';
 import 'package:flutter/material.dart';
 
-class Discussion extends StatelessWidget {
-  const Discussion({
+class Discussion extends StatefulWidget {
+  int currentIndex;
+  Discussion({
     Key key,
+    this.currentIndex,
   }) : super(key: key);
 
+  @override
+  _DiscussionState createState() => _DiscussionState();
+}
+
+class _DiscussionState extends State<Discussion> {
+  int tabIndex = 0;
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -22,7 +30,7 @@ class Discussion extends StatelessWidget {
       initialIndex: 0,
       child: Column(
         children: <Widget>[
-          TopSearchBar(),
+          TopSearchBar(directionIndex: widget.currentIndex, tabIndex: tabIndex),
           SizedBox(
             height: 5,
             child: Container(
@@ -64,6 +72,11 @@ class Discussion extends StatelessWidget {
               indicatorPadding: EdgeInsets.zero,
               indicatorSize: TabBarIndicatorSize.label,
               indicatorColor: primaryColor,
+              onTap: (index) {
+                setState(() {
+                  tabIndex = index;
+                });
+              },
               tabs: [
                 Tab(
                   child: Text(

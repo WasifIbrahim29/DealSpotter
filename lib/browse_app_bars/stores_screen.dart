@@ -3,9 +3,11 @@ import 'dart:convert';
 import 'package:deal_spotter/deals_app_bars/latest_deals.dart';
 import 'package:deal_spotter/directions/deals.dart';
 import 'package:deal_spotter/models/stores_model.dart';
+import 'package:deal_spotter/providers/query_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class StoresScreen extends StatefulWidget {
   const StoresScreen({
@@ -18,14 +20,18 @@ class StoresScreen extends StatefulWidget {
 
 class _StoresScreenState extends State<StoresScreen> {
   List<StoresModel> myStores = [];
+  Future<List<StoresModel>> stores;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    stores = getStores();
   }
 
   Future<List<StoresModel>> getStores() async {
     myStores.clear();
+    Provider.of<QueryProvider>(context, listen: false).myFilteredStores.clear();
+    Provider.of<QueryProvider>(context, listen: false).myStores.clear();
     var url = "https://letitgo.shop/dealspotter/services/getStores";
     var response = await http.get(Uri.parse(url));
     print('Response status: ${response.statusCode}');
@@ -37,6 +43,7 @@ class _StoresScreenState extends State<StoresScreen> {
         var store = StoresModel.fromMap(storesList[i]);
         myStores.add(store);
       }
+      Provider.of<QueryProvider>(context, listen: false).addStore(myStores);
       return myStores;
     }
   }
@@ -58,7 +65,9 @@ class _StoresScreenState extends State<StoresScreen> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => Deals(
-                        storeId: myStores[index].id,
+                        storeId: Provider.of<QueryProvider>(context)
+                            .myFilteredStores[index]
+                            .id,
                       ),
                     ),
                   );
@@ -71,7 +80,7 @@ class _StoresScreenState extends State<StoresScreen> {
                       Expanded(
                         flex: 2,
                         child: Image.network(
-                            'https://letitgo.shop/dealspotter/upload/stores/${myStores[index].store_img}',
+                            'https://letitgo.shop/dealspotter/upload/stores/${Provider.of<QueryProvider>(context).myFilteredStores[index].store_img}',
                             scale: 0.5),
                       ),
                       SizedBox(
@@ -84,7 +93,9 @@ class _StoresScreenState extends State<StoresScreen> {
                           alignment: WrapAlignment.center,
                           children: <Widget>[
                             Text(
-                              myStores[index].name,
+                              Provider.of<QueryProvider>(context)
+                                  .myFilteredStores[index]
+                                  .name,
                               softWrap: true,
                               textAlign: TextAlign.center,
                               style: TextStyle(
@@ -116,7 +127,7 @@ class _StoresScreenState extends State<StoresScreen> {
                 ),
               ));
         },
-        itemCount: myStores.length,
+        itemCount: Provider.of<QueryProvider>(context).myFilteredStores.length,
       ),
     );
   }
@@ -125,7 +136,7 @@ class _StoresScreenState extends State<StoresScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-          future: getStores(),
+          future: stores,
           builder: (context, snapshot) {
             return snapshot.data != null
                 ? StoreWidget(snapshot.data)

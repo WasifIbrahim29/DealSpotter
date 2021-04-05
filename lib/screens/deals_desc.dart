@@ -43,6 +43,9 @@ class _DealsDescState extends State<DealsDesc> {
       image =
           "https://letitgo.shop/dealspotter/upload/userImage/${globals.user.user_image}";
     }
+
+    print("deals id : ${widget.dealsModel.dealId}");
+    print("deals desc : ${widget.dealsModel.deal_description}");
   }
 
   Future<List<CommentModel>> getComments() async {
@@ -124,7 +127,8 @@ class _DealsDescState extends State<DealsDesc> {
                             style: TextStyle(fontSize: 15, color: primaryColor),
                           ),
                           Html(
-                            data: widget.dealsModel.deal_description,
+                            data:
+                                "<p>Save the document by pressing <kbd>Ctrl + S</kbd></p>",
                             onLinkTap: (url) async {
                               if (await canLaunch(url)) {
                                 await launch(

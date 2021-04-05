@@ -3,10 +3,14 @@ import 'dart:convert';
 import 'package:deal_spotter/constants.dart';
 import 'package:deal_spotter/models/list_tiles_model.dart';
 import 'package:deal_spotter/models/voucher_codes_model.dart';
+import 'package:deal_spotter/models/vouchers_saved_model.dart';
+import 'package:deal_spotter/providers/query_provider.dart';
+import 'package:deal_spotter/providers/user_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:deal_spotter/globals/globals.dart' as globals;
+import 'package:provider/provider.dart';
 
 class VoucherCodes extends StatefulWidget {
   String storeId;
@@ -21,9 +25,49 @@ class VoucherCodes extends StatefulWidget {
 
 class _VoucherCodesState extends State<VoucherCodes> {
   List<VoucherCodesModel> myVoucherCodes = [];
+  List<VoucherSavedModel> mySavedVouchers = [];
+  MaterialColor iconColor;
+  Future<List<VoucherCodesModel>> voucherCodes;
+
+  Future<List<VoucherSavedModel>> savedVouchers;
+
+  void getSavedVouchersList() async {
+    mySavedVouchers.clear();
+
+    var vouchersUrl =
+        'https://letitgo.shop/dealspotter/services/getSavedVouchers?memberId=${globals.user.memberId}';
+
+    var response = await http.get(Uri.parse(vouchersUrl));
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      if (data["status"] == 1) {
+        var voucherCodesList = data["savedVouchers"];
+        for (int i = 0; i < voucherCodesList.length; i++) {
+          var voucher = VoucherSavedModel.fromMap(voucherCodesList[i]);
+          mySavedVouchers.add(voucher);
+        }
+      }
+    }
+
+    print("SavedVouchers: $savedVouchers");
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    iconColor = Colors.grey;
+    voucherCodes = getVoucherCodes();
+    getSavedVouchersList();
+  }
 
   Future<List<VoucherCodesModel>> getVoucherCodes() async {
     myVoucherCodes.clear();
+    Provider.of<QueryProvider>(context, listen: false)
+        .myFilteredVouchers
+        .clear();
+    Provider.of<QueryProvider>(context, listen: false).myVouchers.clear();
     var url;
     if (widget.storeId != null) {
       url =
@@ -43,6 +87,12 @@ class _VoucherCodesState extends State<VoucherCodes> {
         var store = VoucherCodesModel.fromMap(voucherCodesList[i]);
         myVoucherCodes.add(store);
       }
+      print("up");
+      print("up: $myVoucherCodes");
+      Provider.of<QueryProvider>(context, listen: false)
+          .addVoucher(myVoucherCodes);
+      print(
+          "Provider.of<QueryProvider>(context).myVouchers: ${Provider.of<QueryProvider>(context, listen: false).myVouchers}");
       return myVoucherCodes;
     }
   }
@@ -57,7 +107,7 @@ class _VoucherCodesState extends State<VoucherCodes> {
             key: GlobalKey(),
             onTap: () async {
               var saveHistoryUrl =
-                  "https://letitgo.shop/dealspotter/services/updateViews?memberId=${globals.user.memberId}&dealId=${myVoucherCodes[index].voucherId}&type=voucher";
+                  "https://letitgo.shop/dealspotter/services/updateViews?memberId=${globals.user.memberId}&dealId=${Provider.of<QueryProvider>(context).myFilteredVouchers[index].voucherId}&type=voucher";
               var response = await http.post(Uri.parse(saveHistoryUrl));
               print(saveHistoryUrl);
               print('Response status: ${response.statusCode}');
@@ -86,7 +136,9 @@ class _VoucherCodesState extends State<VoucherCodes> {
                         ),
                       ),
                       child: Text(
-                        myVoucherCodes[index].voucher_code,
+                        Provider.of<QueryProvider>(context)
+                            .myFilteredVouchers[index]
+                            .voucher_code,
                         style: TextStyle(color: primaryColor, fontSize: 20),
                       ),
                     ),
@@ -109,7 +161,7 @@ class _VoucherCodesState extends State<VoucherCodes> {
                         flex: 2,
                         child: Image(
                           image: NetworkImage(
-                              'https://letitgo.shop/dealspotter/upload/vouchers/${myVoucherCodes[index].voucher_img}',
+                              'https://letitgo.shop/dealspotter/upload/vouchers/${Provider.of<QueryProvider>(context).myFilteredVouchers[index].voucher_img}',
                               scale: 1),
                         ),
                       ),
@@ -119,7 +171,9 @@ class _VoucherCodesState extends State<VoucherCodes> {
                       Expanded(
                         flex: 5,
                         child: Text(
-                          myVoucherCodes[index].voucher_title,
+                          Provider.of<QueryProvider>(context)
+                              .myFilteredVouchers[index]
+                              .voucher_title,
                           style: TextStyle(
                               color: primaryColor,
                               fontWeight: FontWeight.bold,
@@ -130,27 +184,44 @@ class _VoucherCodesState extends State<VoucherCodes> {
                         flex: 1,
                         child: GestureDetector(
                           onTap: () async {
-                            var saveVoucherCode =
-                                "https://letitgo.shop/dealspotter/services/saveHistory?memberId=${globals.user.memberId}&dealId=${myVoucherCodes[index].voucherId}&type=voucher";
-                            var response =
-                                await http.post(Uri.parse(saveVoucherCode));
-                            print(saveVoucherCode);
-                            print('Response status: ${response.statusCode}');
-                            print('Response body: ${response.body}');
-                            if (response.statusCode == 200) {
-                              var data = jsonDecode(response.body);
-                              var status = data["status"];
-                              if (status == "success") {
-                                Scaffold.of(context).showSnackBar(SnackBar(
-                                  content: Text("Voucher Code Saved"),
-                                ));
-                                print("Voucher code saved");
+                            if (voucherAlreadySaved(
+                                myVoucherCodes[index].voucherId)) {
+                              Scaffold.of(context).showSnackBar(SnackBar(
+                                content: Text("Voucher Code Already Saved"),
+                              ));
+                            } else {
+                              var saveVoucherCode =
+                                  "https://letitgo.shop/dealspotter/services/saveHistory?memberId=${globals.user.memberId}&dealId=${Provider.of<QueryProvider>(context).myFilteredVouchers[index].voucherId}&type=voucher";
+                              var response =
+                                  await http.post(Uri.parse(saveVoucherCode));
+                              print(saveVoucherCode);
+                              print('Response status: ${response.statusCode}');
+                              print('Response body: ${response.body}');
+                              if (response.statusCode == 200) {
+                                var data = jsonDecode(response.body);
+                                var status = data["status"];
+                                if (status == "success") {
+                                  Scaffold.of(context).showSnackBar(SnackBar(
+                                    content: Text("Voucher Code Saved"),
+                                  ));
+                                  print("Voucher code saved");
+                                  setState(() {
+                                    iconColor = Colors.red;
+                                  });
+                                }
                               }
                             }
                           },
                           child: Icon(
                             Icons.favorite,
-                            color: Colors.grey,
+                            color: voucherAlreadySaved(
+                                        Provider.of<QueryProvider>(context,
+                                                listen: false)
+                                            .myFilteredVouchers[index]
+                                            .voucherId) ==
+                                    true
+                                ? Colors.red
+                                : Colors.grey,
                           ),
                         ),
                       )
@@ -161,16 +232,26 @@ class _VoucherCodesState extends State<VoucherCodes> {
             ),
           );
         },
-        itemCount: myVoucherCodes.length,
+        itemCount:
+            Provider.of<QueryProvider>(context).myFilteredVouchers.length,
       ),
     );
+  }
+
+  bool voucherAlreadySaved(String voucherId) {
+    for (VoucherSavedModel voucher in mySavedVouchers) {
+      if (voucher.voucherId == voucherId) {
+        return true;
+      }
+    }
+    return false;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-          future: getVoucherCodes(),
+          future: voucherCodes,
           builder: (context, snapshot) {
             return snapshot.data != null
                 ? voucherCodesWidget(snapshot.data)

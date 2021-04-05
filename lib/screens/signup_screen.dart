@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:deal_spotter/components/blue_button.dart';
 import 'package:deal_spotter/components/text_box.dart';
 import 'package:deal_spotter/constants.dart';
 import 'package:deal_spotter/models/user_model.dart';
+import 'package:deal_spotter/screens/landing_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:deal_spotter/globals/globals.dart' as globals;
@@ -18,12 +20,28 @@ class _SignupScreenState extends State<SignupScreen> {
   final formKey = GlobalKey<FormState>();
   bool termsAndConditionsCheckBox = false;
   bool receiveMarketingMaterialCheckBox = false;
-  var user = UserModel();
   bool showSpinner = false;
+  TextEditingController dateOfBirthController = TextEditingController();
   final snackBarKey = GlobalKey<ScaffoldState>();
   final snackBar = SnackBar(
       content: Text(
           'You have to check the terms and conditions checkbox to signup! '));
+
+  void handleTimeout() {
+    // callback function
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (BuildContext context) => LandingScreen()),
+        (route) => false);
+  }
+
+  static const timeout = Duration(seconds: 3);
+  static const ms = Duration(milliseconds: 1);
+
+  Timer startTimeout([int milliseconds]) {
+    var duration = milliseconds == null ? timeout : ms * milliseconds;
+    return Timer(duration, (handleTimeout));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +93,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                   if (value == "") {
                                     return "This field is Mandatory!";
                                   }
-                                  user.username = value;
+                                  globals.user.username = value;
                                   return null;
                                 },
                               ),
@@ -91,7 +109,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                   if (value == "") {
                                     return "This field is Mandatory!";
                                   }
-                                  user.surname = value;
+                                  globals.user.surname = value;
                                   return null;
                                 },
                               ),
@@ -108,7 +126,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             if (value == "") {
                               return "This field is Mandatory!";
                             }
-                            user.address1 = value;
+                            globals.user.address1 = value;
                             return null;
                           },
                         ),
@@ -119,7 +137,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           hint: "Address Line 2",
                           validator: (value) {
                             print(value);
-                            user.address2 = value;
+                            globals.user.address2 = value;
                             return null;
                           },
                         ),
@@ -136,7 +154,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                   if (value == "") {
                                     return "This field is Mandatory!";
                                   }
-                                  user.city = value;
+                                  globals.user.city = value;
                                   return null;
                                 },
                               ),
@@ -152,7 +170,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                   if (value == "") {
                                     return "This field is Mandatory!";
                                   }
-                                  user.state = value;
+                                  globals.user.state = value;
                                   return null;
                                 },
                               ),
@@ -172,7 +190,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                   if (value == "") {
                                     return "This field is Mandatory!";
                                   }
-                                  user.post_code = value;
+                                  globals.user.post_code = value;
                                   return null;
                                 },
                               ),
@@ -183,12 +201,10 @@ class _SignupScreenState extends State<SignupScreen> {
                             Expanded(
                               child: TextBox(
                                 hint: "Date Of Birth",
+                                dobController: dateOfBirthController,
                                 validator: (value) {
                                   print(value);
-                                  if (value == "") {
-                                    return "This field is Mandatory!";
-                                  }
-                                  user.dob = value;
+                                  globals.user.dob = value;
                                   return null;
                                 },
                               ),
@@ -210,7 +226,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                 .hasMatch(value)) {
                               return "This is not a valid email";
                             }
-                            user.email = value;
+                            globals.user.email = value;
                             return null;
                           },
                         ),
@@ -225,7 +241,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             if (value == "") {
                               return "This field is Mandatory!";
                             }
-                            user.password = value;
+                            globals.user.password = value;
                             return null;
                           },
                         ),
@@ -239,7 +255,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             if (value == "") {
                               return "This field is Mandatory!";
                             }
-                            user.contact_no = value;
+                            globals.user.contact_no = value;
                             return null;
                           },
                         ),
@@ -311,8 +327,9 @@ class _SignupScreenState extends State<SignupScreen> {
                                 setState(() {
                                   showSpinner = true;
                                 });
+                                globals.user.user_image = "";
                                 var url =
-                                    "https://letitgo.shop/dealspotter/services/signup?username=${user.username}&surname=${user.surname}&email=${user.email}&password=${user.password}&contact_no=${user.contact_no}&address1=${user.address1}&address2=${user.address2}&city=${user.city}&state=${user.state}&dob=${user.dob}&postCode=${user.post_code}&deviceToken=${globals.user.deviceToken}";
+                                    "https://letitgo.shop/dealspotter/services/signup?username=${globals.user.username}&surname=${globals.user.surname}&email=${globals.user.email}&password=${globals.user.password}&contact_no=${globals.user.contact_no}&address1=${globals.user.address1}&address2=${globals.user.address2}&city=${globals.user.city}&state=${globals.user.state}&dob=${globals.user.dob}&postCode=${globals.user.post_code}&deviceToken=${globals.user.deviceToken}";
                                 //var body = jsonEncode(user.toJson());
                                 //print(body);
                                 var response = await http.post(Uri.parse(url));
@@ -332,8 +349,16 @@ class _SignupScreenState extends State<SignupScreen> {
                                     snackBarKey.currentState.showSnackBar(
                                         SnackBar(content: Text(message)));
                                   } else {
-                                    Navigator.pop(context,
-                                        "Your account have been created successfully.");
+                                    startTimeout();
+
+                                    globals.user.memberId =
+                                        data["memberId"].toString();
+
+                                    snackBarKey.currentState
+                                        .showSnackBar(SnackBar(
+                                      content: Text(
+                                          'Your account have been created successfully.'),
+                                    ));
                                   }
                                 }
                               } else {

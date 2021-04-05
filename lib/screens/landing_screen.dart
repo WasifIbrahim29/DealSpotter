@@ -21,12 +21,22 @@ class _LandingScreenState extends State<LandingScreen> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> _children = [
-      Deals(),
-      Browse(),
-      ForumDirection(),
+      Deals(
+        currentIndex: _currentIndex,
+      ),
+      Browse(
+        currentIndex: _currentIndex,
+      ),
+      ForumDirection(
+        currentIndex: _currentIndex,
+      ),
       Alerts(),
-      Profile(),
-      Discussion(),
+      Profile(
+        currentIndex: _currentIndex,
+      ),
+      Discussion(
+        currentIndex: _currentIndex,
+      ),
     ];
 
     return SafeArea(

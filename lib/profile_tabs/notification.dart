@@ -2,10 +2,12 @@ import 'dart:convert';
 
 import 'package:deal_spotter/constants.dart';
 import 'package:deal_spotter/globals/globals.dart' as globals;
+import 'package:deal_spotter/providers/query_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:deal_spotter/models/notification_model.dart';
+import 'package:provider/provider.dart';
 
 class NotificationTab extends StatefulWidget {
   NotificationTab({
@@ -20,12 +22,20 @@ class _NotificationTabState extends State<NotificationTab> {
   @override
   void initState() {
     super.initState();
+    noti = getNotificationTabList();
   }
+
+  Future<int> noti;
 
   List<NotificationModel> myNotifications = [];
 
   Future<int> getNotificationTabList() async {
     myNotifications.clear();
+    Provider.of<QueryProvider>(context, listen: false)
+        .myFilteredNotifications
+        .clear();
+
+    Provider.of<QueryProvider>(context, listen: false).myNotifications.clear();
     var notificationUrl =
         'https://letitgo.shop/dealspotter/services/getNotifications?memberId=${globals.user.memberId}';
 
@@ -41,6 +51,8 @@ class _NotificationTabState extends State<NotificationTab> {
           var notification = NotificationModel.fromMap(notificationsList[i]);
           myNotifications.add(notification);
         }
+        Provider.of<QueryProvider>(context, listen: false)
+            .addNotification(myNotifications);
       }
     }
     print(myNotifications);
@@ -48,11 +60,10 @@ class _NotificationTabState extends State<NotificationTab> {
   }
 
   Widget notificationTabWidget() {
-    return myNotifications.length < 1
+    return Provider.of<QueryProvider>(context).myNotifications.length < 1
         ? Container(
-            padding: EdgeInsets.all(2),
+            padding: EdgeInsets.all(20),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Icon(
@@ -95,7 +106,9 @@ class _NotificationTabState extends State<NotificationTab> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
-                                  myNotifications[index].type,
+                                  Provider.of<QueryProvider>(context)
+                                      .myFilteredNotifications[index]
+                                      .type,
                                   maxLines: 1,
                                   style: TextStyle(
                                       color: primaryColor,
@@ -103,7 +116,9 @@ class _NotificationTabState extends State<NotificationTab> {
                                       fontSize: 17),
                                 ),
                                 Text(
-                                  myNotifications[index].description,
+                                  Provider.of<QueryProvider>(context)
+                                      .myFilteredNotifications[index]
+                                      .description,
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontWeight: FontWeight.w300,
@@ -115,7 +130,9 @@ class _NotificationTabState extends State<NotificationTab> {
                         ),
                       );
                     },
-                    itemCount: myNotifications.length,
+                    itemCount: Provider.of<QueryProvider>(context)
+                        .myFilteredNotifications
+                        .length,
                   ),
                 ),
               ],
@@ -127,7 +144,7 @@ class _NotificationTabState extends State<NotificationTab> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-          future: getNotificationTabList(),
+          future: noti,
           builder: (context, snapshot) {
             return snapshot.data != null
                 ? notificationTabWidget()

@@ -1,9 +1,11 @@
 import 'dart:convert';
 
 import 'package:deal_spotter/models/categories_model.dart';
+import 'package:deal_spotter/providers/query_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class CategoriesScreen extends StatefulWidget {
   const CategoriesScreen({
@@ -16,14 +18,20 @@ class CategoriesScreen extends StatefulWidget {
 
 class _CategoriesScreenState extends State<CategoriesScreen> {
   List<CategoriesModel> myCategories = [];
+  Future<List<CategoriesModel>> categories;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    categories = getCategories();
   }
 
   Future<List<CategoriesModel>> getCategories() async {
     myCategories.clear();
+    Provider.of<QueryProvider>(context, listen: false)
+        .myFilteredCategories
+        .clear();
+    Provider.of<QueryProvider>(context, listen: false).myCategories.clear();
     var url = "https://letitgo.shop/dealspotter/services/getCategories";
     var response = await http.get(Uri.parse(url));
     print('Response status: ${response.statusCode}');
@@ -35,6 +43,9 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         var category = CategoriesModel.fromMap(categoriesList[i]);
         myCategories.add(category);
       }
+      Provider.of<QueryProvider>(context, listen: false)
+          .addCategory(myCategories);
+
       return myCategories;
     }
   }
@@ -73,7 +84,9 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                         alignment: WrapAlignment.center,
                         children: <Widget>[
                           Text(
-                            myCategories[index].name,
+                            Provider.of<QueryProvider>(context)
+                                .myFilteredCategories[index]
+                                .name,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 fontWeight: FontWeight.w600,
@@ -103,7 +116,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                 ),
               ));
         },
-        itemCount: myCategories.length,
+        itemCount:
+            Provider.of<QueryProvider>(context).myFilteredCategories.length,
       ),
     );
   }
@@ -112,7 +126,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-          future: getCategories(),
+          future: categories,
           builder: (context, snapshot) {
             return snapshot.data != null
                 ? StoreWidget(snapshot.data)

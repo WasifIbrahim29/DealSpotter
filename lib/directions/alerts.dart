@@ -40,6 +40,19 @@ class _AlertsState extends State<Alerts> {
       var brandsList = data["brandsList"];
       for (int i = 0; i < brandsList.length; i++) {
         var brand = BrandModel.fromMap(brandsList[i]);
+        var url =
+            "https://letitgo.shop/dealspotter/services/updateAlertSubscription?memberId=${globals.user.memberId}&subscriptionId=${brand.id}&subscriptionType=brand&subscribed_status=1";
+        var response = await http.get(Uri.parse(url));
+        print('Response status: ${response.statusCode}');
+        print('Response body: ${response.body}');
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          if (data["status"] == "success") {
+            brand.isSubscribed = true;
+          } else {
+            brand.isSubscribed = false;
+          }
+        }
         myAlerts.add(brand);
         filteredMyAlerts.add(brand);
       }
@@ -54,6 +67,19 @@ class _AlertsState extends State<Alerts> {
       var storesList = data["storesList"];
       for (int i = 0; i < storesList.length; i++) {
         var store = StoresModel.fromMap(storesList[i]);
+        var url =
+            "https://letitgo.shop/dealspotter/services/updateAlertSubscription?memberId=${globals.user.memberId}&subscriptionId=${store.id}&subscriptionType=brand&subscribed_status=1";
+        var response = await http.get(Uri.parse(url));
+        print('Response status: ${response.statusCode}');
+        print('Response body: ${response.body}');
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          if (data["status"] == "success") {
+            store.isSubscribed = true;
+          } else {
+            store.isSubscribed = false;
+          }
+        }
         myAlerts.add(store);
         filteredMyAlerts.add(store);
       }
@@ -68,6 +94,19 @@ class _AlertsState extends State<Alerts> {
       var categoriesList = data["categoryList"];
       for (int i = 0; i < categoriesList.length; i++) {
         var category = CategoriesModel.fromMap(categoriesList[i]);
+        var url =
+            "https://letitgo.shop/dealspotter/services/updateAlertSubscription?memberId=${globals.user.memberId}&subscriptionId=${category.id}&subscriptionType=brand&subscribed_status=1";
+        var response = await http.get(Uri.parse(url));
+        print('Response status: ${response.statusCode}');
+        print('Response body: ${response.body}');
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          if (data["status"] == "success") {
+            category.isSubscribed = true;
+          } else {
+            category.isSubscribed = false;
+          }
+        }
         myAlerts.add(category);
         filteredMyAlerts.add(category);
       }
@@ -87,7 +126,17 @@ class _AlertsState extends State<Alerts> {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        TopSearchBar(),
+        Container(
+          padding: EdgeInsets.all(5),
+          height: 80,
+          alignment: Alignment.center,
+          color: primaryColor,
+          child: Image.asset(
+            'images/icon.png',
+            height: 100,
+            width: 100,
+          ),
+        ),
         Container(
           padding: EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 30),
           child: Column(
@@ -224,28 +273,80 @@ class _AlertsState extends State<Alerts> {
                       child: GestureDetector(
                         onTap: () async {
                           String type = checkType(index);
-                          var subscribeUrl =
-                              "https://letitgo.shop/dealspotter/services/subscribeToAlerts?memberId=${globals.user.memberId}&subscriptionId=${filteredMyAlerts[index].id}&subscriptionType=$type";
-                          var response =
-                              await http.post(Uri.parse(subscribeUrl));
-                          print(subscribeUrl);
-                          print('Response status: ${response.statusCode}');
-                          print('Response body: ${response.body}');
-                          if (response.statusCode == 200) {
-                            var data = jsonDecode(response.body);
-                            var status = data["status"];
-                            if (status == "success") {
-                              final snackBar = SnackBar(
-                                  content: Text(
-                                      'You have been subscribed successfully!'));
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(snackBar);
-                            } else {
-                              final snackBar = SnackBar(
-                                  content: Text(
-                                      'You have already been subscribed.'));
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(snackBar);
+
+                          if (filteredMyAlerts[index].isSubscribed) {
+                            var removeSub =
+                                "https://letitgo.shop/dealspotter/services/updateAlertSubscription?memberId=${globals.user.memberId}&subscriptionId=${filteredMyAlerts[index].id}&subscriptionType=$type&subscribed_status=0";
+                            var response =
+                                await http.post(Uri.parse(removeSub));
+                            print(removeSub);
+                            print('Response status: ${response.statusCode}');
+                            print('Response body: ${response.body}');
+                            if (response.statusCode == 200) {
+                              var data = jsonDecode(response.body);
+                              var status = data["status"];
+                              if (status == "success") {
+                                final snackBar = SnackBar(
+                                    content: Text(
+                                        'Your alert subscription updates successfully!'));
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(snackBar);
+                              }
+                              setState(() {
+                                filteredMyAlerts[index].isSubscribed = false;
+                              });
+                            }
+                          } else {
+                            var subscribeAgain =
+                                "https://letitgo.shop/dealspotter/services/updateAlertSubscription?memberId=${globals.user.memberId}&subscriptionId=${filteredMyAlerts[index].id}&subscriptionType=$type&subscribed_status=0";
+                            var response =
+                                await http.post(Uri.parse(subscribeAgain));
+                            print(subscribeAgain);
+                            print('Response status: ${response.statusCode}');
+                            print('Response body: ${response.body}');
+                            if (response.statusCode == 200) {
+                              var data = jsonDecode(response.body);
+                              var status = data["status"];
+                              if (status == "error") {
+                                var subscribeUrl =
+                                    "https://letitgo.shop/dealspotter/services/subscribeToAlerts?memberId=${globals.user.memberId}&subscriptionId=${filteredMyAlerts[index].id}&subscriptionType=$type";
+                                var response =
+                                    await http.post(Uri.parse(subscribeUrl));
+                                print(subscribeUrl);
+                                print(
+                                    'Response status: ${response.statusCode}');
+                                print('Response body: ${response.body}');
+                                if (response.statusCode == 200) {
+                                  var data = jsonDecode(response.body);
+                                  var status = data["status"];
+                                  if (status == "success") {
+                                    final snackBar = SnackBar(
+                                        content: Text(
+                                            'You have been subscribed successfully!'));
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackBar);
+                                  } else {
+                                    final snackBar = SnackBar(
+                                        content: Text(
+                                            'You have already been subscribed.'));
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackBar);
+                                  }
+                                  setState(() {
+                                    filteredMyAlerts[index].isSubscribed =
+                                        false;
+                                  });
+                                }
+                              } else {
+                                final snackBar = SnackBar(
+                                    content: Text(
+                                        'Your alert subscription updates successfully!'));
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(snackBar);
+                                setState(() {
+                                  filteredMyAlerts[index].isSubscribed = true;
+                                });
+                              }
                             }
                           }
                         },
@@ -265,7 +366,9 @@ class _AlertsState extends State<Alerts> {
                                   padding:
                                       const EdgeInsets.only(top: 2, bottom: 2),
                                   child: Text(
-                                    'Add',
+                                    filteredMyAlerts[index].isSubscribed
+                                        ? 'Remove'
+                                        : 'Add',
                                     style: TextStyle(
                                         color: primaryColor, fontSize: 15),
                                   ),

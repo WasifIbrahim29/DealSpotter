@@ -6,10 +6,20 @@ import 'package:deal_spotter/components/top_search_bar.dart';
 import 'package:deal_spotter/constants.dart';
 import 'package:flutter/material.dart';
 
-class Browse extends StatelessWidget {
-  const Browse({
+class Browse extends StatefulWidget {
+  int currentIndex;
+
+  Browse({
     Key key,
+    this.currentIndex,
   }) : super(key: key);
+
+  @override
+  _BrowseState createState() => _BrowseState();
+}
+
+class _BrowseState extends State<Browse> {
+  int tabIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +28,7 @@ class Browse extends StatelessWidget {
       initialIndex: 0,
       child: Column(
         children: <Widget>[
-          TopSearchBar(),
+          TopSearchBar(directionIndex: widget.currentIndex, tabIndex: tabIndex),
           SizedBox(
             height: 5,
             child: Container(
@@ -35,6 +45,11 @@ class Browse extends StatelessWidget {
               indicatorPadding: EdgeInsets.zero,
               indicatorSize: TabBarIndicatorSize.label,
               indicatorColor: primaryColor,
+              onTap: (index) {
+                setState(() {
+                  tabIndex = index;
+                });
+              },
               tabs: [
                 Tab(
                   child: Text(

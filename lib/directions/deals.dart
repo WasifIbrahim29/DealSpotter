@@ -8,13 +8,22 @@ import 'package:deal_spotter/deals_app_bars/latest_deals.dart';
 import 'package:deal_spotter/deals_app_bars/voucher_codes.dart';
 import 'package:flutter/material.dart';
 
-class Deals extends StatelessWidget {
+class Deals extends StatefulWidget {
   String storeId;
+  int currentIndex;
 
   Deals({
     Key key,
     this.storeId,
+    this.currentIndex,
   }) : super(key: key);
+
+  @override
+  _DealsState createState() => _DealsState();
+}
+
+class _DealsState extends State<Deals> {
+  int tabIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +34,8 @@ class Deals extends StatelessWidget {
           initialIndex: 0,
           child: Column(
             children: <Widget>[
-              TopSearchBar(),
+              TopSearchBar(
+                  directionIndex: widget.currentIndex, tabIndex: tabIndex),
               Container(
                 height: 30,
                 color: primaryColor,
@@ -35,6 +45,12 @@ class Deals extends StatelessWidget {
                   indicatorPadding: EdgeInsets.zero,
                   indicatorSize: TabBarIndicatorSize.label,
                   indicatorColor: Colors.white,
+                  onTap: (index) {
+                    print("tabIndex: $tabIndex");
+                    setState(() {
+                      tabIndex = index;
+                    });
+                  },
                   tabs: [
                     Tab(
                       child: AutoSizeText(
@@ -72,7 +88,7 @@ class Deals extends StatelessWidget {
                 child: TabBarView(
                   children: <Widget>[
                     VoucherCodes(
-                      storeId: storeId,
+                      storeId: widget.storeId,
                     ),
                     LatestDeals(),
                     Forum(),

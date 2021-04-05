@@ -4,12 +4,14 @@ import 'package:deal_spotter/directions/deals.dart';
 import 'package:deal_spotter/directions/discussion.dart';
 import 'package:deal_spotter/models/discussion_model.dart';
 import 'package:deal_spotter/models/stores_model.dart';
+import 'package:deal_spotter/providers/query_provider.dart';
 import 'package:deal_spotter/widgets/SingleDiscussionWidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:deal_spotter/globals/globals.dart' as globals;
 import 'package:deal_spotter/constants.dart';
+import 'package:provider/provider.dart';
 
 class NewDiscussionScreen extends StatefulWidget {
   const NewDiscussionScreen({
@@ -23,6 +25,7 @@ class NewDiscussionScreen extends StatefulWidget {
 class _NewDiscussionScreenState extends State<NewDiscussionScreen> {
   String image;
   List<DiscussionModel> myDiscussions = [];
+  Future<int> noti;
   @override
   void initState() {
     // TODO: implement initState
@@ -34,10 +37,16 @@ class _NewDiscussionScreenState extends State<NewDiscussionScreen> {
       image =
           "https://letitgo.shop/dealspotter/upload/userImage/${globals.user.user_image}";
     }
+    noti = getNewDiscussions();
   }
 
-  Future<List<DiscussionModel>> getNewDiscussions() async {
+  Future<int> getNewDiscussions() async {
     myDiscussions.clear();
+    Provider.of<QueryProvider>(context, listen: false)
+        .myFilteredNewDiscussion
+        .clear();
+    Provider.of<QueryProvider>(context, listen: false).myNewDiscussion.clear();
+    print("wtf");
     var url = "https://letitgo.shop/dealspotter/services/listAllDiscussion";
     var response = await http.get(Uri.parse(url));
     print('Response status: ${response.statusCode}');
@@ -50,13 +59,15 @@ class _NewDiscussionScreenState extends State<NewDiscussionScreen> {
         var disc = DiscussionModel.fromMap(newDiscussions[i]);
         myDiscussions.add(disc);
       }
+      Provider.of<QueryProvider>(context, listen: false)
+          .addNewDiscussion(myDiscussions);
       print(myDiscussions);
-      return myDiscussions;
+      return 1;
     }
   }
 
-  Widget DiscussionWidget(List<DiscussionModel> discussions) {
-    return myDiscussions.length > 0
+  Widget DiscussionWidget() {
+    return Provider.of<QueryProvider>(context).myNewDiscussion.length > 0
         ? Container(
             margin: EdgeInsets.only(top: 5),
             child: ListView.builder(
@@ -69,7 +80,9 @@ class _NewDiscussionScreenState extends State<NewDiscussionScreen> {
                       builder: (BuildContext bx) {
                         return SafeArea(
                           child: SingleDiscussionWidget(
-                            discussionId: myDiscussions[index].id,
+                            discussionId: Provider.of<QueryProvider>(context)
+                                .myFilteredNewDiscussion[index]
+                                .id,
                           ),
                         );
                       },
@@ -88,7 +101,9 @@ class _NewDiscussionScreenState extends State<NewDiscussionScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                myDiscussions[index].subject,
+                                Provider.of<QueryProvider>(context)
+                                    .myFilteredNewDiscussion[index]
+                                    .subject,
                                 style: TextStyle(
                                     fontSize: 15,
                                     color: Colors.black,
@@ -100,7 +115,9 @@ class _NewDiscussionScreenState extends State<NewDiscussionScreen> {
                               Padding(
                                 padding: const EdgeInsets.only(left: 20),
                                 child: Text(
-                                  myDiscussions[index].question,
+                                  Provider.of<QueryProvider>(context)
+                                      .myFilteredNewDiscussion[index]
+                                      .question,
                                   style: TextStyle(
                                       fontSize: 15, color: Colors.black),
                                 ),
@@ -132,7 +149,7 @@ class _NewDiscussionScreenState extends State<NewDiscussionScreen> {
                                             width: 100,
                                             height: 100,
                                             child: Icon(
-                                              Icons.supervised_user_circle,
+                                              Icons.person,
                                               color: Colors.grey[800],
                                             ),
                                           ),
@@ -153,7 +170,9 @@ class _NewDiscussionScreenState extends State<NewDiscussionScreen> {
                       )),
                 );
               },
-              itemCount: myDiscussions.length,
+              itemCount: Provider.of<QueryProvider>(context)
+                  .myFilteredNewDiscussion
+                  .length,
             ),
           )
         : Align(
@@ -189,10 +208,10 @@ class _NewDiscussionScreenState extends State<NewDiscussionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-          future: getNewDiscussions(),
+          future: noti,
           builder: (context, snapshot) {
             return snapshot.data != null
-                ? DiscussionWidget(snapshot.data)
+                ? DiscussionWidget()
                 : Center(child: CircularProgressIndicator());
           }),
     );

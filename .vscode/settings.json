@@ -1,0 +1,9 @@
+{
+    "remote.extensionKind": {
+
+        "pub.name": [
+            "ui"
+        ]
+    },
+    "dart.flutterSdkPath": "/Users/macbook/flutter_dev"
+}

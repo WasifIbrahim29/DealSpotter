@@ -1,4 +1,8 @@
-import 'voucher_codes_model.dart';
-import 'latest_deals_model.dart';
+import 'package:flutter/material.dart';
 
-class SavedModel {}
+import 'voucher_codes_model.dart';
+
+class SavedModel {
+  String title;
+  SavedModel({@required this.title});
+}

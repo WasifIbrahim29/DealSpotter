@@ -16,43 +16,17 @@ class VoucherHistoryModel extends HistoryModel {
   String voucher_attachments;
   String voucher_description;
   VoucherHistoryModel({
+    String voucher_title,
     this.activityId,
     this.memberId,
     this.dealId,
     this.type,
     this.dated,
     this.voucherId,
-    this.voucher_title,
     this.voucher_code,
     this.voucher_attachments,
     this.voucher_description,
-  });
-
-  VoucherHistoryModel copyWith({
-    String activityId,
-    String memberId,
-    String dealId,
-    String type,
-    String dated,
-    String voucherId,
-    String voucher_title,
-    String voucher_code,
-    String voucher_attachments,
-    String voucher_description,
-  }) {
-    return VoucherHistoryModel(
-      activityId: activityId ?? this.activityId,
-      memberId: memberId ?? this.memberId,
-      dealId: dealId ?? this.dealId,
-      type: type ?? this.type,
-      dated: dated ?? this.dated,
-      voucherId: voucherId ?? this.voucherId,
-      voucher_title: voucher_title ?? this.voucher_title,
-      voucher_code: voucher_code ?? this.voucher_code,
-      voucher_attachments: voucher_attachments ?? this.voucher_attachments,
-      voucher_description: voucher_description ?? this.voucher_description,
-    );
-  }
+  }) : super(title: voucher_title);
 
   Map<String, dynamic> toMap() {
     return {

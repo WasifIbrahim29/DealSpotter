@@ -4,12 +4,14 @@ import 'package:deal_spotter/directions/deals.dart';
 import 'package:deal_spotter/directions/discussion.dart';
 import 'package:deal_spotter/models/discussion_model.dart';
 import 'package:deal_spotter/models/stores_model.dart';
+import 'package:deal_spotter/providers/query_provider.dart';
 import 'package:deal_spotter/widgets/SingleDiscussionWidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:deal_spotter/globals/globals.dart' as globals;
 import 'package:deal_spotter/constants.dart';
+import 'package:provider/provider.dart';
 
 class DiscussedScreen extends StatefulWidget {
   const DiscussedScreen({
@@ -23,6 +25,7 @@ class DiscussedScreen extends StatefulWidget {
 class _DiscussedScreenState extends State<DiscussedScreen> {
   String image;
   List<DiscussionModel> myDiscussions = [];
+  Future<List<DiscussionModel>> disc;
   @override
   void initState() {
     // TODO: implement initState
@@ -34,10 +37,15 @@ class _DiscussedScreenState extends State<DiscussedScreen> {
       image =
           "https://letitgo.shop/dealspotter/upload/userImage/${globals.user.user_image}";
     }
+    disc = getNewDiscussions();
   }
 
   Future<List<DiscussionModel>> getNewDiscussions() async {
     myDiscussions.clear();
+    Provider.of<QueryProvider>(context, listen: false)
+        .myFilteredOldDiscussion
+        .clear();
+    Provider.of<QueryProvider>(context, listen: false).myOldDiscussion.clear();
     var url = "https://letitgo.shop/dealspotter/services/listAllDiscussion";
     var response = await http.get(Uri.parse(url));
     print('Response status: ${response.statusCode}');
@@ -50,13 +58,15 @@ class _DiscussedScreenState extends State<DiscussedScreen> {
         var disc = DiscussionModel.fromMap(pastDiscussions[i]);
         myDiscussions.add(disc);
       }
+      Provider.of<QueryProvider>(context, listen: false)
+          .addOldDiscussion(myDiscussions);
       print(myDiscussions);
       return myDiscussions;
     }
   }
 
   Widget DiscussionWidget(List<DiscussionModel> discussions) {
-    return myDiscussions.length > 0
+    return Provider.of<QueryProvider>(context).myOldDiscussion.length > 0
         ? Container(
             margin: EdgeInsets.only(top: 5),
             child: ListView.builder(
@@ -69,7 +79,9 @@ class _DiscussedScreenState extends State<DiscussedScreen> {
                       builder: (BuildContext bx) {
                         return SafeArea(
                           child: SingleDiscussionWidget(
-                            discussionId: myDiscussions[index].id,
+                            discussionId: Provider.of<QueryProvider>(context)
+                                .myFilteredOldDiscussion[index]
+                                .id,
                           ),
                         );
                       },
@@ -88,7 +100,9 @@ class _DiscussedScreenState extends State<DiscussedScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                myDiscussions[index].subject,
+                                Provider.of<QueryProvider>(context)
+                                    .myFilteredOldDiscussion[index]
+                                    .subject,
                                 style: TextStyle(
                                     fontSize: 15,
                                     color: Colors.black,
@@ -100,7 +114,9 @@ class _DiscussedScreenState extends State<DiscussedScreen> {
                               Padding(
                                 padding: const EdgeInsets.only(left: 20),
                                 child: Text(
-                                  myDiscussions[index].question,
+                                  Provider.of<QueryProvider>(context)
+                                      .myFilteredOldDiscussion[index]
+                                      .question,
                                   style: TextStyle(
                                       fontSize: 15, color: Colors.black),
                                 ),
@@ -132,7 +148,7 @@ class _DiscussedScreenState extends State<DiscussedScreen> {
                                             width: 100,
                                             height: 100,
                                             child: Icon(
-                                              Icons.supervised_user_circle,
+                                              Icons.person,
                                               color: Colors.grey[800],
                                             ),
                                           ),
@@ -153,7 +169,9 @@ class _DiscussedScreenState extends State<DiscussedScreen> {
                       )),
                 );
               },
-              itemCount: myDiscussions.length,
+              itemCount: Provider.of<QueryProvider>(context)
+                  .myFilteredOldDiscussion
+                  .length,
             ),
           )
         : Align(
@@ -189,7 +207,7 @@ class _DiscussedScreenState extends State<DiscussedScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-          future: getNewDiscussions(),
+          future: disc,
           builder: (context, snapshot) {
             return snapshot.data != null
                 ? DiscussionWidget(snapshot.data)
