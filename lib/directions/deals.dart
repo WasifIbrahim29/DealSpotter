@@ -11,11 +11,13 @@ import 'package:flutter/material.dart';
 class Deals extends StatefulWidget {
   String storeId;
   int currentIndex;
+  String categoryId;
 
   Deals({
     Key key,
     this.storeId,
     this.currentIndex,
+    this.categoryId,
   }) : super(key: key);
 
   @override
@@ -89,8 +91,12 @@ class _DealsState extends State<Deals> {
                   children: <Widget>[
                     VoucherCodes(
                       storeId: widget.storeId,
+                      categoryId: widget.categoryId,
                     ),
-                    LatestDeals(),
+                    LatestDeals(
+                      storeId: widget.storeId,
+                      categoryId: widget.categoryId,
+                    ),
                     Forum(),
                   ],
                 ),

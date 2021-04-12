@@ -19,7 +19,7 @@ class StoresModel extends DealALertsModel {
     this.description,
     this.about_store,
     this.status,
-  }) : super(id: id, name: name, isSubscribed: isSubscribed);
+  }) : super(id: id, name: name);
 
   Map<String, dynamic> toMap() {
     return {

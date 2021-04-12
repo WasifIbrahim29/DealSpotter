@@ -13,7 +13,7 @@ class CategoriesModel extends DealALertsModel {
     this.parent_id,
     this.status,
     this.dated,
-  }) : super(id: id, name: name, isSubscribed: isSubscribed);
+  }) : super(id: id, name: name);
 
   Map<String, dynamic> toMap() {
     return {

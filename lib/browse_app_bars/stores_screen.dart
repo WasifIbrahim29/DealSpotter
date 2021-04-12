@@ -54,24 +54,24 @@ class _StoresScreenState extends State<StoresScreen> {
       child: ListView.builder(
         padding: EdgeInsets.only(left: 10, right: 10, top: 10),
         itemBuilder: (BuildContext ctxt, int index) {
-          return Card(
-              elevation: 5,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(0.0),
-              ),
-              child: GestureDetector(
-                onTap: () async {
-                  final result = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Deals(
-                        storeId: Provider.of<QueryProvider>(context)
-                            .myFilteredStores[index]
-                            .id,
-                      ),
-                    ),
-                  );
-                },
+          return GestureDetector(
+            onTap: () async {
+              final result = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Deals(
+                    storeId: Provider.of<QueryProvider>(context)
+                        .myFilteredStores[index]
+                        .id,
+                  ),
+                ),
+              );
+            },
+            child: Card(
+                elevation: 5,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(0.0),
+                ),
                 child: Container(
                   padding: EdgeInsets.only(left: 12),
                   child: Row(
@@ -124,8 +124,8 @@ class _StoresScreenState extends State<StoresScreen> {
                       )
                     ],
                   ),
-                ),
-              ));
+                )),
+          );
         },
         itemCount: Provider.of<QueryProvider>(context).myFilteredStores.length,
       ),

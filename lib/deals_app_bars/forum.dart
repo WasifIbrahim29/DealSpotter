@@ -55,16 +55,20 @@ class _ForumState extends State<Forum> {
     for (int i = 0; i < myDeals.length; i++) {
       var commentsUrl =
           "https://letitgo.shop/dealspotter/services/getComments?memberId=${globals.user.memberId}&dealId=${myDeals[i].dealId}";
+      print(commentsUrl);
       response = await http.get(Uri.parse(commentsUrl));
       print('Response status: ${response.statusCode}');
-      print('Response bxxody: ${response.body}');
+      print('Response body: ${response.body}');
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         var status = data["status"];
         if (status == 1) {
-          data = jsonDecode(response.body);
           var comments = data["forumData"];
-          print(myComments);
+          for (int i = 0; i < comments.length; i++) {
+            var comment = CommentModel.fromMap(comments[i]);
+            myComments.add(int.parse(comment.commId));
+          }
+          print("myComments: $myComments");
           myComments.add(comments.length);
         }
       }
@@ -111,7 +115,7 @@ class _ForumState extends State<Forum> {
                                 width: 10,
                               ),
                               Text(
-                                "5 comments",
+                                "${myComments.length} comments",
                                 maxLines: 1,
                                 style: TextStyle(
                                     color: Colors.black, fontSize: 13),
@@ -138,12 +142,9 @@ class _ForumState extends State<Forum> {
                             height: 2,
                           ),
                           Html(
-                            data: Provider.of<QueryProvider>(context)
-                                    .myFilteredForums[index]
-                                    .deal_description
-                                    .substring(28, 70) +
-                                "...",
-                          ),
+                              data: Provider.of<QueryProvider>(context)
+                                  .myFilteredForums[index]
+                                  .deal_description),
                           GestureDetector(
                             onTap: () {
                               Navigator.push(

@@ -127,8 +127,7 @@ class _DealsDescState extends State<DealsDesc> {
                             style: TextStyle(fontSize: 15, color: primaryColor),
                           ),
                           Html(
-                            data:
-                                "<p>Save the document by pressing <kbd>Ctrl + S</kbd></p>",
+                            data: "${widget.dealsModel.deal_description}",
                             onLinkTap: (url) async {
                               if (await canLaunch(url)) {
                                 await launch(

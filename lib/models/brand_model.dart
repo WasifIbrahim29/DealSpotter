@@ -11,7 +11,7 @@ class BrandModel extends DealALertsModel {
     bool isSubscribed,
     this.status,
     this.dated,
-  }) : super(id: id, name: name, isSubscribed: isSubscribed);
+  }) : super(id: id, name: name);
 
   Map<String, dynamic> toMap() {
     return {
