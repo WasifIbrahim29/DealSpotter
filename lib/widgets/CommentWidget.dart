@@ -69,7 +69,6 @@ class _CommentWidgetState extends State<CommentWidget> {
   Widget build(BuildContext context) {
     print(widget.myComments.length);
     return Container(
-      margin: EdgeInsets.all(10),
       padding: EdgeInsets.all(10.0),
       decoration: BoxDecoration(
         color: Colors.grey[400],

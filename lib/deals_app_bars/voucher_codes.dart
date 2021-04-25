@@ -30,6 +30,7 @@ class _VoucherCodesState extends State<VoucherCodes> {
   List<VoucherSavedModel> mySavedVouchers = [];
   MaterialColor iconColor;
   Future<List<VoucherCodesModel>> voucherCodes;
+  List savedVoucherIds = [];
 
   Future<List<VoucherSavedModel>> savedVouchers;
 
@@ -48,6 +49,7 @@ class _VoucherCodesState extends State<VoucherCodes> {
         var voucherCodesList = data["savedVouchers"];
         for (int i = 0; i < voucherCodesList.length; i++) {
           var voucher = VoucherSavedModel.fromMap(voucherCodesList[i]);
+          savedVoucherIds.add(voucher.voucherId);
           mySavedVouchers.add(voucher);
         }
       }
@@ -98,8 +100,11 @@ class _VoucherCodesState extends State<VoucherCodes> {
       if (data["status"] == 1) {
         var voucherCodesList = data["voucherCodes"];
         for (int i = 0; i < voucherCodesList.length; i++) {
-          var store = VoucherCodesModel.fromMap(voucherCodesList[i]);
-          myVoucherCodes.add(store);
+          var voucher = VoucherCodesModel.fromMap(voucherCodesList[i]);
+          if (savedVoucherIds.contains(voucher.voucherId)) {
+            voucher.is_saved = true;
+          }
+          myVoucherCodes.add(voucher);
         }
         print("up");
         print("up: $myVoucherCodes");
@@ -142,7 +147,7 @@ class _VoucherCodesState extends State<VoucherCodes> {
                   key: GlobalKey(),
                   onTap: () async {
                     var saveHistoryUrl =
-                        "https://letitgo.shop/dealspotter/services/updateViews?memberId=${globals.user.memberId}&dealId=${Provider.of<QueryProvider>(context).myFilteredVouchers[index].voucherId}&type=voucher";
+                        "https://letitgo.shop/dealspotter/services/updateViews?memberId=${globals.user.memberId}&dealId=${myVoucherCodes[index].voucherId}&type=voucher";
                     var response = await http.post(Uri.parse(saveHistoryUrl));
                     print(saveHistoryUrl);
                     print('Response status: ${response.statusCode}');
@@ -171,9 +176,7 @@ class _VoucherCodesState extends State<VoucherCodes> {
                               ),
                             ),
                             child: Text(
-                              Provider.of<QueryProvider>(context)
-                                  .myFilteredVouchers[index]
-                                  .voucher_code,
+                              myVoucherCodes[index].voucher_code,
                               style:
                                   TextStyle(color: primaryColor, fontSize: 20),
                             ),
@@ -197,7 +200,7 @@ class _VoucherCodesState extends State<VoucherCodes> {
                               flex: 2,
                               child: Image(
                                 image: NetworkImage(
-                                    'https://letitgo.shop/dealspotter/upload/vouchers/${Provider.of<QueryProvider>(context).myFilteredVouchers[index].voucher_img}',
+                                    'https://letitgo.shop/dealspotter/upload/vouchers/${myVoucherCodes[index].voucher_img}',
                                     scale: 1),
                               ),
                             ),
@@ -207,9 +210,7 @@ class _VoucherCodesState extends State<VoucherCodes> {
                             Expanded(
                               flex: 5,
                               child: Text(
-                                Provider.of<QueryProvider>(context)
-                                    .myFilteredVouchers[index]
-                                    .voucher_title,
+                                myVoucherCodes[index].voucher_title,
                                 style: TextStyle(
                                     color: primaryColor,
                                     fontWeight: FontWeight.bold,
@@ -220,15 +221,34 @@ class _VoucherCodesState extends State<VoucherCodes> {
                               flex: 1,
                               child: GestureDetector(
                                 onTap: () async {
-                                  if (voucherAlreadySaved(
-                                      myVoucherCodes[index].voucherId)) {
-                                    Scaffold.of(context).showSnackBar(SnackBar(
-                                      content:
-                                          Text("Voucher Code Already Saved"),
-                                    ));
+                                  if (myVoucherCodes[index].is_saved) {
+                                    var unsaveVoucherCode =
+                                        "https://letitgo.shop/dealspotter/services/removeFavourite?memberId=${globals.user.memberId}&dealId=${myVoucherCodes[index].voucherId}&type=voucher";
+                                    var response = await http
+                                        .post(Uri.parse(unsaveVoucherCode));
+                                    print(unsaveVoucherCode);
+                                    print(
+                                        'Response status: ${response.statusCode}');
+                                    print('Response body: ${response.body}');
+                                    if (response.statusCode == 200) {
+                                      var data = jsonDecode(response.body);
+                                      var status = data["status"];
+                                      if (status == "success") {
+                                        Scaffold.of(context)
+                                            .showSnackBar(SnackBar(
+                                          content: Text(
+                                              "Voucher Code removed from favourites successfully."),
+                                        ));
+                                        print("Voucher code removed");
+                                        setState(() {
+                                          myVoucherCodes[index].is_saved =
+                                              false;
+                                        });
+                                      }
+                                    }
                                   } else {
                                     var saveVoucherCode =
-                                        "https://letitgo.shop/dealspotter/services/saveHistory?memberId=${globals.user.memberId}&dealId=${Provider.of<QueryProvider>(context).myFilteredVouchers[index].voucherId}&type=voucher";
+                                        "https://letitgo.shop/dealspotter/services/saveHistory?memberId=${globals.user.memberId}&dealId=${myVoucherCodes[index].voucherId}&type=voucher";
                                     var response = await http
                                         .post(Uri.parse(saveVoucherCode));
                                     print(saveVoucherCode);
@@ -241,11 +261,12 @@ class _VoucherCodesState extends State<VoucherCodes> {
                                       if (status == "success") {
                                         Scaffold.of(context)
                                             .showSnackBar(SnackBar(
-                                          content: Text("Voucher Code Saved"),
+                                          content: Text(
+                                              "Voucher Code added to favourites successfully."),
                                         ));
                                         print("Voucher code saved");
                                         setState(() {
-                                          iconColor = Colors.red;
+                                          myVoucherCodes[index].is_saved = true;
                                         });
                                       }
                                     }
@@ -253,13 +274,7 @@ class _VoucherCodesState extends State<VoucherCodes> {
                                 },
                                 child: Icon(
                                   Icons.favorite,
-                                  color: voucherAlreadySaved(
-                                              Provider.of<QueryProvider>(
-                                                      context,
-                                                      listen: false)
-                                                  .myFilteredVouchers[index]
-                                                  .voucherId) ==
-                                          true
+                                  color: myVoucherCodes[index].is_saved == true
                                       ? Colors.red
                                       : Colors.grey,
                                 ),
@@ -278,13 +293,14 @@ class _VoucherCodesState extends State<VoucherCodes> {
           );
   }
 
-  bool voucherAlreadySaved(String voucherId) {
+  MaterialColor voucherAlreadySaved(String voucherId) {
+    print("I am here again");
     for (VoucherSavedModel voucher in mySavedVouchers) {
       if (voucher.voucherId == voucherId) {
-        return true;
+        return Colors.red;
       }
     }
-    return false;
+    return Colors.grey;
   }
 
   @override

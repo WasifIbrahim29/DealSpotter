@@ -40,9 +40,11 @@ class _AlertsState extends State<Alerts> {
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
     if (response.statusCode == 200) {
-      var data = jsonDecode(response.body);
-      if (data["status"] == 1) {
-        subscriptions = data["subscriptions"];
+      if (response.body != '') {
+        var data = jsonDecode(response.body);
+        if (data["status"] == 1) {
+          subscriptions = data["subscriptions"];
+        }
       }
     }
 
@@ -282,7 +284,7 @@ class _AlertsState extends State<Alerts> {
                               });
                               final snackBar = SnackBar(
                                   content: Text(
-                                      'Your alert subscription updates successfully!'));
+                                      'Your alert has been added successfully!'));
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(snackBar);
                             }

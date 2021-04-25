@@ -5,6 +5,7 @@ import 'package:deal_spotter/models/history_model.dart';
 import 'package:deal_spotter/models/notification_model.dart';
 import 'package:deal_spotter/models/saved_model.dart';
 import 'package:deal_spotter/models/stores_model.dart';
+import 'package:deal_spotter/models/user_model.dart';
 import 'package:deal_spotter/models/voucher_codes_model.dart';
 import 'package:flutter/material.dart';
 
@@ -42,6 +43,8 @@ class QueryProvider extends ChangeNotifier {
 
   List<DiscussionModel> myOldDiscussion = [];
   List<DiscussionModel> myFilteredOldDiscussion = [];
+
+  var user = UserModel();
 
   void addVoucher(List<VoucherCodesModel> vouchers) {
     print("wtf");

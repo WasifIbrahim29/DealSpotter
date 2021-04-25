@@ -64,12 +64,10 @@ class _ForumState extends State<Forum> {
         var status = data["status"];
         if (status == 1) {
           var comments = data["forumData"];
-          for (int i = 0; i < comments.length; i++) {
-            var comment = CommentModel.fromMap(comments[i]);
-            myComments.add(int.parse(comment.commId));
-          }
           print("myComments: $myComments");
           myComments.add(comments.length);
+        } else {
+          myComments.add(0);
         }
       }
     }
@@ -115,7 +113,7 @@ class _ForumState extends State<Forum> {
                                 width: 10,
                               ),
                               Text(
-                                "${myComments.length} comments",
+                                "${myComments[index]} comments",
                                 maxLines: 1,
                                 style: TextStyle(
                                     color: Colors.black, fontSize: 13),

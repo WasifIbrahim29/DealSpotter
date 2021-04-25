@@ -9,6 +9,7 @@ class VoucherCodesModel {
   String storeId;
   String store_title;
   String store_img;
+  bool is_saved = false;
   VoucherCodesModel({
     String title,
     this.voucherId,

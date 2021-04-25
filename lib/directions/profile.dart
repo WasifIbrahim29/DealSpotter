@@ -8,7 +8,14 @@ import 'package:deal_spotter/profile_tabs/history.dart';
 import 'package:deal_spotter/profile_tabs/notification.dart';
 import 'package:deal_spotter/profile_tabs/saved.dart';
 import 'package:deal_spotter/screens/edit_profile.dart';
+import 'package:deal_spotter/screens/login_screen.dart';
+import 'package:deal_spotter/screens/signup_screen.dart';
+import 'package:deal_spotter/screens/welcome_screen.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../push_notification_service.dart';
 
 class Profile extends StatefulWidget {
   int currentIndex;
@@ -57,37 +64,40 @@ class _ProfileState extends State<Profile> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      CircleAvatar(
-                        radius: 55,
-                        backgroundColor: primaryColor,
-                        child: _image != null
-                            ? ClipRRect(
-                                borderRadius: BorderRadius.circular(50),
-                                child: Image.network(
-                                  _image,
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20),
+                        child: CircleAvatar(
+                          radius: 55,
+                          backgroundColor: primaryColor,
+                          child: _image != null
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(50),
+                                  child: Image.network(
+                                    _image,
+                                    width: 100,
+                                    height: 100,
+                                    fit: BoxFit.fitHeight,
+                                  ),
+                                )
+                              : Container(
+                                  decoration: BoxDecoration(
+                                      color: Colors.grey[200],
+                                      borderRadius: BorderRadius.circular(50)),
                                   width: 100,
                                   height: 100,
-                                  fit: BoxFit.fitHeight,
+                                  child: Icon(
+                                    Icons.person,
+                                    size: 60,
+                                    color: Colors.grey[800],
+                                  ),
                                 ),
-                              )
-                            : Container(
-                                decoration: BoxDecoration(
-                                    color: Colors.grey[200],
-                                    borderRadius: BorderRadius.circular(50)),
-                                width: 100,
-                                height: 100,
-                                child: Icon(
-                                  Icons.person,
-                                  size: 60,
-                                  color: Colors.grey[800],
-                                ),
-                              ),
+                        ),
                       ),
                       SizedBox(
-                        width: 30,
+                        width: 50,
                       ),
                       Container(
-                        margin: EdgeInsets.only(top: 20, left: 10),
+                        margin: EdgeInsets.only(top: 1, left: 10, right: 10),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
@@ -148,6 +158,27 @@ class _ProfileState extends State<Profile> {
                               height: 30.0,
                               child: Text(
                                 "Edit Profile",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ),
+                            MaterialButton(
+                              onPressed: () {
+                                logout(context);
+                              },
+                              elevation: 5,
+                              color: Colors.white,
+                              minWidth: 150,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(0.0),
+                                  side: BorderSide(
+                                      color: primaryColor, width: 2)),
+                              height: 30.0,
+                              child: Text(
+                                "Log Out",
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.w700,
@@ -225,7 +256,7 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  _navigateAndDisplaySelection(BuildContext context) async {
+  _navigateAndDisplaySelection(context) async {
     final result = await Navigator.push(
         context, MaterialPageRoute(builder: (context) => EditProfileScreen()));
 
@@ -237,5 +268,14 @@ class _ProfileState extends State<Profile> {
 
       snackBarKey.currentState.showSnackBar(SnackBar(content: Text("$result")));
     }
+  }
+
+  void logout(BuildContext context) async {
+    PushNotificationService.deleteToken();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("memberId", "@");
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => WelcomeScreen()),
+        (Route<dynamic> route) => false);
   }
 }

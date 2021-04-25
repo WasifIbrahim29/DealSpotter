@@ -111,7 +111,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                               height: 2,
                             ),
                             Text(
-                              "10 Coupons",
+                              "${myCategories[index].total_coupons}  Coupons",
                               textAlign: TextAlign.center,
                               style: TextStyle(),
                             ),

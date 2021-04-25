@@ -6,6 +6,7 @@ class CategoriesModel extends DealALertsModel {
   String parent_id;
   String status;
   String dated;
+  String total_coupons;
   CategoriesModel({
     String id,
     String name,
@@ -13,6 +14,7 @@ class CategoriesModel extends DealALertsModel {
     this.parent_id,
     this.status,
     this.dated,
+    this.total_coupons,
   }) : super(id: id, name: name);
 
   Map<String, dynamic> toMap() {
@@ -34,6 +36,7 @@ class CategoriesModel extends DealALertsModel {
       name: map['category_name'],
       status: map['status'],
       dated: map['dated'],
+      total_coupons: map['total_coupons'],
     );
   }
 

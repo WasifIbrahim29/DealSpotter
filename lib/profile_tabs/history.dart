@@ -79,8 +79,10 @@ class _HistoryTabState extends State<HistoryTab> {
       }
     }
 
-    Provider.of<QueryProvider>(context, listen: false)
-        .addHistory(historyModels);
+    if (historyModels.length > 0) {
+      Provider.of<QueryProvider>(context, listen: false)
+          .addHistory(historyModels);
+    }
 
     print("exiting");
     return 1;
@@ -92,6 +94,7 @@ class _HistoryTabState extends State<HistoryTab> {
             padding: EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
                   Icons.announcement_rounded,

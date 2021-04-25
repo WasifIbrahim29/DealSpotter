@@ -6,6 +6,7 @@ import 'package:deal_spotter/components/text_box.dart';
 import 'package:deal_spotter/constants.dart';
 import 'package:deal_spotter/globals/globals.dart' as globals;
 import 'package:deal_spotter/models/user_model.dart';
+import 'package:deal_spotter/providers/query_provider.dart';
 import 'package:deal_spotter/providers/user_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -84,7 +85,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var provider = Provider.of<UserProvider>(context).user;
     return SafeArea(
       child: Scaffold(
         key: snackBarKey,

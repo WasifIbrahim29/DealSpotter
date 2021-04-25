@@ -9,6 +9,7 @@ import 'package:deal_spotter/screens/landing_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String id = 'login_screen';
@@ -158,6 +159,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                       var user = data["response"];
                                       var newUser = UserModel.fromMap(user);
                                       globals.user = newUser;
+                                      SharedPreferences prefs =
+                                          await SharedPreferences.getInstance();
+                                      prefs.setString(
+                                          "memberId", globals.user.memberId);
+                                      prefs.setString("email", email);
+                                      prefs.setString("password", password);
+
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(

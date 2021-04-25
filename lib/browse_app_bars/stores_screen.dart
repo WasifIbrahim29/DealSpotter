@@ -93,9 +93,7 @@ class _StoresScreenState extends State<StoresScreen> {
                           alignment: WrapAlignment.center,
                           children: <Widget>[
                             Text(
-                              Provider.of<QueryProvider>(context)
-                                  .myFilteredStores[index]
-                                  .name,
+                              myStores[index].name,
                               softWrap: true,
                               textAlign: TextAlign.center,
                               style: TextStyle(
@@ -107,7 +105,7 @@ class _StoresScreenState extends State<StoresScreen> {
                               height: 2,
                             ),
                             Text(
-                              "10 Coupons",
+                              "${myStores[index].total_coupons} Coupons",
                               textAlign: TextAlign.center,
                               style: TextStyle(),
                             ),

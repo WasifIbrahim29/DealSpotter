@@ -11,11 +11,13 @@ class StoresModel extends DealALertsModel {
   String description;
   String about_store;
   String status;
+  String total_coupons;
   StoresModel({
     String id,
     String name,
     bool isSubscribed,
     this.store_img,
+    this.total_coupons,
     this.description,
     this.about_store,
     this.status,
@@ -36,13 +38,13 @@ class StoresModel extends DealALertsModel {
     if (map == null) return null;
 
     return StoresModel(
-      id: map['storeId'],
-      name: map['title'],
-      store_img: map['store_img'],
-      description: map['description'],
-      about_store: map['about_store'],
-      status: map['status'],
-    );
+        id: map['storeId'],
+        name: map['title'],
+        store_img: map['store_img'],
+        description: map['description'],
+        about_store: map['about_store'],
+        status: map['status'],
+        total_coupons: map['total_coupons']);
   }
 
   String toJson() => json.encode(toMap());

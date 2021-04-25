@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:deal_spotter/globals/globals.dart' as globals;
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignupScreen extends StatefulWidget {
   @override
@@ -350,6 +351,16 @@ class _SignupScreenState extends State<SignupScreen> {
                                         SnackBar(content: Text(message)));
                                   } else {
                                     startTimeout();
+
+                                    SharedPreferences prefs =
+                                        await SharedPreferences.getInstance();
+                                    prefs.setString("memberId",
+                                        data["memberId"].toString());
+
+                                    prefs.setString(
+                                        "email", globals.user.email);
+                                    prefs.setString(
+                                        "password", globals.user.password);
 
                                     globals.user.memberId =
                                         data["memberId"].toString();

@@ -28,4 +28,8 @@ class PushNotificationService {
     print("FirebaseMessaging token: $token");
     globals.user.deviceToken = token;
   }
+
+  static Future deleteToken() async {
+    messaging.deleteToken();
+  }
 }

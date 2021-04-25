@@ -76,9 +76,9 @@ class _SavedTabState extends State<SavedTab> {
       }
     }
 
-    Provider.of<QueryProvider>(context, listen: false).addSaved(savedModels);
-
-    print(Provider.of<QueryProvider>(context, listen: false).mySaved[0].title);
+    if (savedModels.length > 0) {
+      Provider.of<QueryProvider>(context, listen: false).addSaved(savedModels);
+    }
 
     print("SavedModels: $savedModels");
     return 1;
@@ -87,9 +87,9 @@ class _SavedTabState extends State<SavedTab> {
   Widget savedTabWidget() {
     return savedModels.length < 1
         ? Container(
-            padding: EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
                   Icons.announcement_rounded,

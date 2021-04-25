@@ -86,9 +86,16 @@ class _DealsDescState extends State<DealsDesc> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              TopSearchBar(),
-              SizedBox(
-                height: 20,
+              Container(
+                padding: EdgeInsets.all(5),
+                height: 80,
+                alignment: Alignment.center,
+                color: primaryColor,
+                child: Image.asset(
+                  'images/icon.png',
+                  height: 100,
+                  width: 100,
+                ),
               ),
               Container(
                 margin: EdgeInsets.all(13),

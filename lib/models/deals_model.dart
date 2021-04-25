@@ -10,6 +10,7 @@ class DealsModel {
   String storeId;
   String store_title;
   String store_img;
+  bool is_saved = false;
   DealsModel({
     this.dealId,
     this.deal_title,

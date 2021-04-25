@@ -51,10 +51,14 @@ class _NotificationTabState extends State<NotificationTab> {
           var notification = NotificationModel.fromMap(notificationsList[i]);
           myNotifications.add(notification);
         }
-        Provider.of<QueryProvider>(context, listen: false)
-            .addNotification(myNotifications);
       }
     }
+
+    if (myNotifications.length > 0) {
+      Provider.of<QueryProvider>(context, listen: false)
+          .addNotification(myNotifications);
+    }
+
     print(myNotifications);
     return 1;
   }
