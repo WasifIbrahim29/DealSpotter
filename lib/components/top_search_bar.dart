@@ -1,12 +1,9 @@
 import 'package:deal_spotter/providers/query_provider.dart';
-import 'package:deal_spotter/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:deal_spotter/constants.dart';
-import 'package:deal_spotter/components/blue_button.dart';
-import 'package:deal_spotter/components/text_box.dart';
 import 'package:provider/provider.dart';
 
-class TopSearchBar extends StatelessWidget {
+class TopSearchBar extends PreferredSize {
   TopSearchBar({
     this.tabIndex,
     this.directionIndex,
@@ -16,14 +13,21 @@ class TopSearchBar extends StatelessWidget {
   final int tabIndex;
 
   @override
+  Size get preferredSize => Size.fromHeight(140);
+
+  @override
   Widget build(BuildContext context) {
     print("directionIndex: $directionIndex");
     print("tabIndex: $tabIndex");
     return Container(
       color: primaryColor,
-      height: 100,
+      height: 100 + MediaQuery.of(context).padding.top,
       child: Padding(
-        padding: EdgeInsets.only(left: 10, right: 10, top: 30, bottom: 20),
+        padding: EdgeInsets.only(
+            left: 10,
+            right: 10,
+            top: 30 + MediaQuery.of(context).padding.top,
+            bottom: 20),
         child: Row(
           children: <Widget>[
             Image.asset(

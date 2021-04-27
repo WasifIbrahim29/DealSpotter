@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:deal_spotter/appbar/appbar.dart';
 import 'package:deal_spotter/components/blue_button.dart';
 import 'package:deal_spotter/components/text_box.dart';
 import 'package:deal_spotter/constants.dart';
@@ -29,168 +30,167 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: ModalProgressHUD(
-        inAsyncCall: showSpinner,
-        child: Scaffold(
-          key: snackBarKey,
-          body: Column(
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.all(5),
-                height: 80,
-                alignment: Alignment.center,
-                color: primaryColor,
-                child: Image.asset(
-                  'images/icon.png',
-                  height: 100,
-                  width: 100,
-                ),
-              ),
-              SizedBox(
-                height: 70,
-              ),
-              Form(
-                key: formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      'Log In',
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                      ),
+    return ModalProgressHUD(
+      inAsyncCall: showSpinner,
+      child: Scaffold(
+        key: snackBarKey,
+        appBar: MyAppBar(),
+        body: Column(
+          children: <Widget>[
+            // Container(
+            //   padding: EdgeInsets.all(5),
+            //   height: 80,
+            //   alignment: Alignment.center,
+            //   color: primaryColor,
+            //   child: Image.asset(
+            //     'images/icon.png',
+            //     height: 100,
+            //     width: 100,
+            //   ),
+            // ),
+            SizedBox(
+              height: 70,
+            ),
+            Form(
+              key: formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    'Log In',
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
                     ),
-                    Container(
-                      padding: EdgeInsets.only(left: 60, top: 25, right: 60),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: <Widget>[
-                          TextBox(
-                            hint: "E-mail",
-                            validator: (value) {
-                              print(value);
-                              if (value == "") {
-                                return "This field is Mandatory!";
-                              }
-                              if (!RegExp(
-                                      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                                  .hasMatch(value)) {
-                                return "This is not a valid email";
-                              }
-                              email = value;
-                              return null;
-                            },
-                          ),
-                          SizedBox(
-                            height: 30,
-                          ),
-                          TextBox(
-                            hint: "Password",
-                            obscureText: true,
-                            validator: (value) {
-                              print(value);
-                              if (value == "") {
-                                return "This field is Mandatory!";
-                              }
-                              password = value;
-                              return null;
-                            },
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              InkWell(
-                                child: Icon(
-                                  !loggedIn
-                                      ? Icons.check_box_outline_blank
-                                      : Icons.check_box,
-                                  color:
-                                      !loggedIn ? Colors.black : primaryColor,
-                                ),
-                                onTap: () {
-                                  setState(() {
-                                    loggedIn = !loggedIn;
-                                  });
-                                },
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(left: 60, top: 25, right: 60),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        TextBox(
+                          hint: "E-mail",
+                          validator: (value) {
+                            print(value);
+                            if (value == "") {
+                              return "This field is Mandatory!";
+                            }
+                            if (!RegExp(
+                                    r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                .hasMatch(value)) {
+                              return "This is not a valid email";
+                            }
+                            email = value;
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        TextBox(
+                          hint: "Password",
+                          obscureText: true,
+                          validator: (value) {
+                            print(value);
+                            if (value == "") {
+                              return "This field is Mandatory!";
+                            }
+                            password = value;
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            InkWell(
+                              child: Icon(
+                                !loggedIn
+                                    ? Icons.check_box_outline_blank
+                                    : Icons.check_box,
+                                color:
+                                    !loggedIn ? Colors.black : primaryColor,
                               ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text('Keep me logged in'),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 12,
-                          ),
-                          BlueButton(
-                            title: 'Submit',
-                            colour: Colors.black,
-                            onPressed: () async {
-                              if (formKey.currentState.validate()) {
+                              onTap: () {
                                 setState(() {
-                                  showSpinner = true;
+                                  loggedIn = !loggedIn;
                                 });
-                                var url =
-                                    "https://letitgo.shop/dealspotter/services/signin?email=$email&password=$password&deviceToken=${globals.user.deviceToken}";
-                                //var body = jsonEncode(user.toJson());
-                                //print(body);
-                                var response = await http.post(Uri.parse(url));
-                                print(
-                                    'Response status: ${response.statusCode}');
-                                print('Response body: ${response.body}');
-                                setState(() {
-                                  showSpinner = false;
-                                });
-                                if (response.statusCode == 200) {
-                                  try {
-                                    var data =
-                                        json.decode(response.body.toString());
-                                    var message = data["message"];
-                                    if (message != null) {
-                                      snackBarKey.currentState.showSnackBar(
-                                          SnackBar(content: Text(message)));
-                                    } else {
-                                      var user = data["response"];
-                                      var newUser = UserModel.fromMap(user);
-                                      globals.user = newUser;
-                                      SharedPreferences prefs =
-                                          await SharedPreferences.getInstance();
-                                      prefs.setString(
-                                          "memberId", globals.user.memberId);
-                                      prefs.setString("email", email);
-                                      prefs.setString("password", password);
+                              },
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text('Keep me logged in'),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 12,
+                        ),
+                        BlueButton(
+                          title: 'Submit',
+                          colour: Colors.black,
+                          onPressed: () async {
+                            if (formKey.currentState.validate()) {
+                              setState(() {
+                                showSpinner = true;
+                              });
+                              var url =
+                                  "https://letitgo.shop/dealspotter/services/signin?email=$email&password=$password&deviceToken=${globals.user.deviceToken}";
+                              //var body = jsonEncode(user.toJson());
+                              //print(body);
+                              var response = await http.post(Uri.parse(url));
+                              print(
+                                  'Response status: ${response.statusCode}');
+                              print('Response body: ${response.body}');
+                              setState(() {
+                                showSpinner = false;
+                              });
+                              if (response.statusCode == 200) {
+                                try {
+                                  var data =
+                                      json.decode(response.body.toString());
+                                  var message = data["message"];
+                                  if (message != null) {
+                                    snackBarKey.currentState.showSnackBar(
+                                        SnackBar(content: Text(message)));
+                                  } else {
+                                    var user = data["response"];
+                                    var newUser = UserModel.fromMap(user);
+                                    globals.user = newUser;
+                                    SharedPreferences prefs =
+                                        await SharedPreferences.getInstance();
+                                    prefs.setString(
+                                        "memberId", globals.user.memberId);
+                                    prefs.setString("email", email);
+                                    prefs.setString("password", password);
 
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                LandingScreen()),
-                                      );
-                                    }
-                                  } catch (e) {
-                                    print(e);
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              LandingScreen()),
+                                    );
                                   }
-                                } else {
-                                  snackBarKey.currentState
-                                      .showSnackBar(snackBar);
+                                } catch (e) {
+                                  print(e);
                                 }
+                              } else {
+                                snackBarKey.currentState
+                                    .showSnackBar(snackBar);
                               }
-                            },
-                          ),
-                        ],
-                      ),
+                            }
+                          },
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

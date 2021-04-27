@@ -1,3 +1,4 @@
+import 'package:deal_spotter/appbar/appbar.dart';
 import 'package:deal_spotter/components/white_button.dart';
 import 'package:deal_spotter/models/comment_model.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -78,99 +79,98 @@ class _DealsDescState extends State<DealsDesc> {
 
   Widget DealAndCommentsWidget(List<CommentModel> comments) {
     print("Comments length: ${comments.length}");
-    return SafeArea(
-      child: Scaffold(
-        key: snackBarKey,
-        body: SingleChildScrollView(
-          physics: ScrollPhysics(),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.all(5),
-                height: 80,
-                alignment: Alignment.center,
-                color: primaryColor,
-                child: Image.asset(
-                  'images/icon.png',
-                  height: 100,
-                  width: 100,
-                ),
+    return Scaffold(
+      key: snackBarKey,
+      appBar: MyAppBar(),
+      body: SingleChildScrollView(
+        physics: ScrollPhysics(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            // Container(
+            //   padding: EdgeInsets.all(5),
+            //   height: 80,
+            //   alignment: Alignment.center,
+            //   color: primaryColor,
+            //   child: Image.asset(
+            //     'images/icon.png',
+            //     height: 100,
+            //     width: 100,
+            //   ),
+            // ),
+            Container(
+              margin: EdgeInsets.all(13),
+              padding: EdgeInsets.all(18.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
               ),
-              Container(
-                margin: EdgeInsets.all(13),
-                padding: EdgeInsets.all(18.0),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Image.network(
-                            'https://letitgo.shop/dealspotter/upload/deals/${widget.dealsModel.deal_img}',
-                            scale: 1.8,
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            "${widget.dealsModel.deal_price}\$",
-                            style: TextStyle(
-                                fontSize: 10, fontWeight: FontWeight.w800),
-                          ),
-                        ],
-                      ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Image.network(
+                          'https://letitgo.shop/dealspotter/upload/deals/${widget.dealsModel.deal_img}',
+                          scale: 1.8,
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          "${widget.dealsModel.deal_price}\$",
+                          style: TextStyle(
+                              fontSize: 10, fontWeight: FontWeight.w800),
+                        ),
+                      ],
                     ),
-                    Expanded(
-                      child: Column(
-                        children: [
-                          Text(
-                            widget.dealsModel.deal_title,
-                            style: TextStyle(fontSize: 15, color: primaryColor),
-                          ),
-                          Html(
-                            data: "${widget.dealsModel.deal_description}",
-                            onLinkTap: (url) async {
-                              if (await canLaunch(url)) {
-                                await launch(
-                                  url,
-                                );
-                              } else {
-                                throw 'Could not launch $url';
-                              }
-                            },
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          BlueButton(
-                            title: 'Get Deal',
-                            colour: Colors.white,
-                            onPressed: () {
-                              _launchURL(widget.dealsModel.deal_url);
-                            },
-                          ),
-                        ],
-                      ),
+                  ),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Text(
+                          widget.dealsModel.deal_title,
+                          style: TextStyle(fontSize: 15, color: primaryColor),
+                        ),
+                        Html(
+                          data: "${widget.dealsModel.deal_description}",
+                          onLinkTap: (url) async {
+                            if (await canLaunch(url)) {
+                              await launch(
+                                url,
+                              );
+                            } else {
+                              throw 'Could not launch $url';
+                            }
+                          },
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        BlueButton(
+                          title: 'Get Deal',
+                          colour: Colors.white,
+                          onPressed: () {
+                            _launchURL(widget.dealsModel.deal_url);
+                          },
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              CommentWidget(
-                commentController: commentController,
-                widget: widget,
-                image: image,
-                context: context,
-                myComments: comments,
-                dealsModel: widget.dealsModel,
-              ),
-            ],
-          ),
+            ),
+            CommentWidget(
+              commentController: commentController,
+              widget: widget,
+              image: image,
+              context: context,
+              myComments: comments,
+              dealsModel: widget.dealsModel,
+            ),
+          ],
         ),
       ),
     );

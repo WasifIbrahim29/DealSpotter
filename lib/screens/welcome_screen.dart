@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:deal_spotter/appbar/appbar.dart';
 import 'package:deal_spotter/components/blue_button.dart';
 import 'package:deal_spotter/components/white_button.dart';
 import 'package:deal_spotter/constants.dart';
@@ -84,107 +85,110 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           future: autoLogin(),
           builder: (context, snapshot) {
             return snapshot.data != null
-                ? WelcomeScreenWidget()
+                ? welcomeScreenWidget()
                 : Center(child: CircularProgressIndicator());
           }),
     );
   }
 
-  Widget WelcomeScreenWidget() {
+  Widget welcomeScreenWidget() {
     return isLoggedIn == false
-        ? Column(
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.all(5),
-                height: 80,
-                alignment: Alignment.center,
-                color: primaryColor,
-                child: Image.asset(
-                  'images/icon.png',
-                  height: 100,
-                  width: 100,
-                ),
-              ),
-              Expanded(
-                  child: Padding(
-                padding: EdgeInsets.all(30),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          'Welcome to',
-                          style: TextStyle(
-                              color: Colors.grey[700],
-                              fontSize: 25,
-                              fontWeight: FontWeight.w400),
-                        ),
-                        FittedBox(
-                          fit: BoxFit.fitWidth,
-                          child: Text(
-                            ' Deal Spotter',
+        ? Scaffold(
+            appBar: MyAppBar(),
+            body: Column(
+              children: <Widget>[
+                // Container(
+                //   padding: EdgeInsets.only(top: 30, bottom: 5),
+                //   height: 110,
+                //   alignment: Alignment.center,
+                //   color: primaryColor,
+                //   child: Image.asset(
+                //     'images/icon.png',
+                //     height: 100,
+                //     width: 100,
+                //   ),
+                // ),
+                Expanded(
+                    child: Padding(
+                  padding: EdgeInsets.all(30),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            'Welcome to',
                             style: TextStyle(
-                                color: primaryColor,
+                                color: Colors.grey[700],
                                 fontSize: 25,
-                                fontWeight: FontWeight.bold),
+                                fontWeight: FontWeight.w400),
                           ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 12,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 30, right: 40),
-                      child: Text(
-                        'Create an account to create deal alerts, vote, comments, save your favorite deals and more',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 15,
+                          FittedBox(
+                            fit: BoxFit.fitWidth,
+                            child: Text(
+                              ' Deal Spotter',
+                              style: TextStyle(
+                                  color: primaryColor,
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 12,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 30, right: 40),
+                        child: Text(
+                          'Create an account to create deal alerts, vote, comments, save your favorite deals and more',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 15,
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 32,
-                    ),
-                    BlueButton(
-                      title: 'Sign Up',
-                      colour: Colors.white,
-                      onPressed: () {
-                        _navigateAndDisplaySelection(context);
-                      },
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      ' Or',
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    WhiteButton(
-                      title: 'Log In',
-                      colour: Colors.black,
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => LoginScreen(),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              )),
-            ],
+                      SizedBox(
+                        height: 32,
+                      ),
+                      BlueButton(
+                        title: 'Sign Up',
+                        colour: Colors.white,
+                        onPressed: () {
+                          _navigateAndDisplaySelection(context);
+                        },
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        ' Or',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      WhiteButton(
+                        title: 'Log In',
+                        colour: Colors.black,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => LoginScreen(),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                )),
+              ],
+            ),
           )
         : LandingScreen();
   }

@@ -39,22 +39,20 @@ class _LandingScreenState extends State<LandingScreen> {
       ),
     ];
 
-    return SafeArea(
-      child: Scaffold(
-        body: _children[_currentIndex],
-        bottomNavigationBar: BottomNavigationBar(
-          showUnselectedLabels: true,
-          selectedItemColor: primaryColor,
-          type: BottomNavigationBarType.fixed,
-          unselectedItemColor: Colors.black,
-          currentIndex: _currentIndex,
-          onTap: (int index) {
-            setState(() {
-              _currentIndex = index;
-            });
-          },
-          items: kDestinationItems,
-        ),
+    return Scaffold(
+      body: _children[_currentIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        showUnselectedLabels: true,
+        selectedItemColor: primaryColor,
+        type: BottomNavigationBarType.fixed,
+        unselectedItemColor: Colors.black,
+        currentIndex: _currentIndex,
+        onTap: (int index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        items: kDestinationItems,
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:core';
 
+import 'package:deal_spotter/appbar/appbar.dart';
 import 'package:deal_spotter/components/blue_button.dart';
 import 'package:deal_spotter/components/top_search_bar.dart';
 import 'package:deal_spotter/constants.dart';
@@ -109,116 +110,107 @@ class _AlertsState extends State<Alerts> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     alertInitialization = getAlerts();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Container(
-          padding: EdgeInsets.all(5),
-          height: 80,
-          alignment: Alignment.center,
-          color: primaryColor,
-          child: Image.asset(
-            'images/icon.png',
-            height: 100,
-            width: 100,
-          ),
-        ),
-        Container(
-          padding: EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 30),
-          child: Column(
-            children: <Widget>[
-              Text(
-                'Create a Deal Alert',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 27,
+    return Scaffold(
+      appBar: MyAppBar(),
+      body: Column(
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 30),
+            child: Column(
+              children: <Widget>[
+                Text(
+                  'Create a Deal Alert',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 27,
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              Text(
-                'Create a deal alert below, so you never miss the deals you care about the most',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.black,
+                SizedBox(
+                  height: 30,
                 ),
-              )
-            ],
+                Text(
+                  'Create a deal alert below, so you never miss the deals you care about the most',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.black,
+                  ),
+                )
+              ],
+            ),
           ),
-        ),
-        Container(
-          padding: EdgeInsets.only(left: 20, right: 20, bottom: 20),
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                flex: 3,
-                child: Container(
-                  height: 45,
-                  child: TextField(
-                    textAlignVertical: TextAlignVertical.center,
-                    onChanged: (text) {
+          Container(
+            padding: EdgeInsets.only(left: 20, right: 20, bottom: 20),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  flex: 3,
+                  child: Container(
+                    height: 45,
+                    child: TextField(
+                      textAlignVertical: TextAlignVertical.center,
+                      onChanged: (text) {
+                        filteredMyAlerts.clear();
+                        myAlerts.forEach((element) {
+                          if (element.name
+                              .toLowerCase()
+                              .contains(text.toLowerCase())) {
+                            filteredMyAlerts.add(element);
+                          }
+                        });
+
+                        setState(() {});
+                      },
+                      cursorColor: Colors.black,
+                      style: TextStyle(
+                        backgroundColor: Colors.white,
+                      ),
+                      textAlign: TextAlign.start,
+                      controller: searchController,
+                      decoration: kTextFieldDecoration.copyWith(
+                          hintStyle: TextStyle(fontSize: 14),
+                          hintText: "Add keywords, Store, Category, Brand"),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: BlueButton(
+                    colour: Colors.white,
+                    title: "Create",
+                    onPressed: () async {
                       filteredMyAlerts.clear();
                       myAlerts.forEach((element) {
-                        if (element.name
-                            .toLowerCase()
-                            .contains(text.toLowerCase())) {
+                        if (element.name.contains(searchController.text)) {
                           filteredMyAlerts.add(element);
                         }
                       });
 
                       setState(() {});
                     },
-                    cursorColor: Colors.black,
-                    style: TextStyle(
-                      backgroundColor: Colors.white,
-                    ),
-                    textAlign: TextAlign.start,
-                    controller: searchController,
-                    decoration: kTextFieldDecoration.copyWith(
-                        hintStyle: TextStyle(fontSize: 14),
-                        hintText: "Add keywords, Store, Category, Brand"),
+                    fontSize: 15,
                   ),
                 ),
-              ),
-              Expanded(
-                flex: 1,
-                child: BlueButton(
-                  colour: Colors.white,
-                  title: "Create",
-                  onPressed: () async {
-                    filteredMyAlerts.clear();
-                    myAlerts.forEach((element) {
-                      if (element.name.contains(searchController.text)) {
-                        filteredMyAlerts.add(element);
-                      }
-                    });
-
-                    setState(() {});
-                  },
-                  fontSize: 15,
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        FutureBuilder(
-          future: alertInitialization,
-          builder: (context, snapshot) {
-            return snapshot.data != null
-                ? alertsWidget()
-                : Center(child: CircularProgressIndicator());
-          },
-        ),
-      ],
+          FutureBuilder(
+            future: alertInitialization,
+            builder: (context, snapshot) {
+              return snapshot.data != null
+                  ? alertsWidget()
+                  : Center(child: CircularProgressIndicator());
+            },
+          ),
+        ],
+      ),
     );
   }
 

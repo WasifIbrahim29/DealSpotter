@@ -46,6 +46,10 @@ class DealSpotter extends StatelessWidget {
       create: (context) => QueryProvider(),
       child: MaterialApp(
         key: mainNavigatorKey,
+        themeMode: ThemeMode.light,
+        theme: ThemeData.light().copyWith(
+          brightness: Brightness.dark,
+        ),
         debugShowCheckedModeBanner: false,
         initialRoute: WelcomeScreen.id,
         routes: {
